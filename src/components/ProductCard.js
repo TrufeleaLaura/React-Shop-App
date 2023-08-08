@@ -1,3 +1,4 @@
+import {Link} from "react-router-dom";
 
 export function ProductCard({products}){
 
@@ -5,6 +6,7 @@ export function ProductCard({products}){
         <div className="main">
             <div className="product-grid">
                 {products.map((product,index) => (
+                    <Link to={`/product/${product.id}`} key={index}>
                     <div className="product-grid__product-card" key={index}>
                         <div className="product-grid__product-card__image-wrapper">
                             <div className="product-grid__product-card__image-wrapper__gallery">
@@ -30,6 +32,7 @@ export function ProductCard({products}){
                         </div>
                         <button className="product-grid__product-card__add-to-cart-button">Add to Cart</button>
                     </div>
+                    </Link>
                 ))}
             </div>
         </div>
