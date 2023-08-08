@@ -22,8 +22,6 @@ export function useFetchProductsInitial(api = 'https://dummyjson.com/products/?l
 }
 
 
-
-
 export async function getProducts(fetchApi) {
     const response = await fetch(fetchApi);
     const productsElements = await response.json();

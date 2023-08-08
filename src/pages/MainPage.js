@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CategoryFilter } from "../components/FilterSearch";
 import { ProductCard } from "../components/ProductCard";
-import {getProducts, useCartProducts, useFetchProductsInitial} from "../components/hooksApi";
+import {getProducts, useFetchProductsInitial} from "../components/hooksApi";
 import {SearchBar} from "../components/SearchBar";
 import "../components/componentsCSS.css";
 import _debounce from 'lodash/debounce';
@@ -11,15 +11,26 @@ export function MainPage() {
     const [products, setProducts] = useFetchProductsInitial();
     const [categories, setCategories] = useState(["All Products", ...new Set(products.map((product) => product.category))]);
     const [selectedCategory, setSelectedCategory] = useState("All Products");
-    const filteredProducts = selectedCategory === "All Products"
-        ? products
-        : products.filter(product => product.category === selectedCategory);
+    const [filteredProducts, setFilteredProducts] = useState(products);
+
+    useEffect(() => {
+        if(products.length > 0){
+            setFilteredProducts(products);
+        }
+    },[products]);
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
+
+        if (category === "All Products") {
+            setFilteredProducts(products);
+        } else {
+            const updatedFilteredProducts = products.filter(product => product.category === category);
+            setFilteredProducts(updatedFilteredProducts);
+        }
     };
 
-    useEffect(() => {
+    useEffect( () => {
         const handleScroll = _debounce(() => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight && selectedCategory === "All Products") {
                 console.log(selectedCategory);
@@ -34,9 +45,9 @@ export function MainPage() {
                     .catch(error => {
                         console.error('Error fetching additional products:', error);
                     });
+
             }
         }, 300);
-
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -52,12 +63,10 @@ export function MainPage() {
     const handleSearch= (searchValue) => {
         const searchTerm = searchValue.target.value.toLowerCase();
         if (searchTerm === "") {
-            setProducts(products);
+            setFilteredProducts(products);
         } else {
-            const filteredProducts = products.filter(product =>
-                product.title.toLowerCase().includes(searchTerm)
-            );
-            setProducts(filteredProducts);
+            setFilteredProducts(products.filter(product =>
+                product.title.toLowerCase().includes(searchTerm)));
         }
     };
 

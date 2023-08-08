@@ -3,7 +3,7 @@ import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
 
 export function Navbar() {
-    const links = ["What's new", "Account", "Cart"];
+    const links = ["What's new", "Account", "Login","Cart"];
     return (
             <header className="header">
                 <nav className="header__navbar">

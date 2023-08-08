@@ -1,5 +1,5 @@
 import './componentsCSS.css'
-export function SearchBar({ onChangeSearch }) {
+export function SearchBar({ onChangeSearch}) {
     return (
         <div className="search-bar">
             <input
