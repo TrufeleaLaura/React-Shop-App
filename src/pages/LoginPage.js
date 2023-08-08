@@ -1,16 +1,37 @@
 import React, { useState } from 'react';
 import './pagesCSS.css';
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../components/AuthComponent";
 
-function Login() {
+function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        try {
+            const response = await fetch('http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-
+            if (response.ok) {
+                const data = await response.json();
+                const { token } = data;
+                login(token);
+                navigate('/shop');
+            } else {
+                console.error('Login failed');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
     };
-
     return (
         <div className="login-container">
             <h2>Login</h2>
@@ -43,4 +64,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginPage;

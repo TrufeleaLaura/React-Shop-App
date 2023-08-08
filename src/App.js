@@ -5,18 +5,19 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
+import {AuthProvider} from "./components/AuthComponent";
 
 function App() {
   return (
-      <Router>
-          <Navbar/>
-          <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/shop" element={<MainPage/>}/>
-                <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/login" element={<LoginPage/>}/>
-          </Routes>
-      </Router>
+          <AuthProvider>
+              <Navbar/>
+              <Routes>
+                  <Route path="/" element={<HomePage/>}/>
+                  <Route path="/shop" element={<MainPage/>}/>
+                  <Route path="/product/:id" element={<ProductPage/>}/>
+                  <Route path="/login" element={<LoginPage/>}/>
+              </Routes>
+          </AuthProvider>
   );
 }
 

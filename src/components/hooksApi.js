@@ -20,6 +20,24 @@ export function useFetchProductsInitial(api = 'https://dummyjson.com/products/?l
 
     return [products, setProducts];
 }
+export function useFetchCartProducts(api = `https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, headers = {}) {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        async function fetchProducts() {
+            try {
+                const response = await fetch(api, { headers });
+                const data = await response.json();
+                setProducts(data.products);
+            } catch (error) {
+                setProducts([]);
+            }
+        }
+        fetchProducts();
+    }, [api, headers]);
+
+    return [products, setProducts];
+}
+
 
 
 export async function getProducts(fetchApi) {

@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom";
 
 export function ProductCard({products}){
-
     return (
         <div className="main">
             <div className="product-grid">
