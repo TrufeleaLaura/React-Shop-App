@@ -118,7 +118,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     max-width: 1200px;
-    margin-top: 4rem;
+    margin-top: 1.2rem;
     margin-left: auto;
     margin-right: auto;
     justify-content: center;
@@ -287,4 +287,27 @@
     align-content:space-between;
     flex-wrap: wrap;
     flex-direction:column-reverse;
+}
+
+.search-bar {
+    display: flex;
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.search-input {
+    padding: 0.5rem;
+    border: 3px solid #ccc;
+    width:20rem;
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: midnightblue;
+    box-shadow: 0 2px 8px midnightblue;
 }

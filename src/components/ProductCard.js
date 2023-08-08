@@ -1,30 +1,19 @@
-import {useCartProducts} from "./hooksApi";
-import {useEffect, useState} from "react";
 
-export function ProductCard({totalProductsInPage,selectedCategory}){
-    const { data } = useCartProducts({ productsAlreadyInPage: totalProductsInPage - 9 });
-    const [products, setProducts] = useState([]);
+export function ProductCard({products}){
 
-    useEffect(() => {
-        if (selectedCategory === "All Products") {
-            setProducts(data);
-        } else {
-            setProducts(data.filter((product) => product.category === selectedCategory));
-        }
-    }, [selectedCategory, data]);
     return (
         <div className="main">
-        <div className="product-grid">
-            {products.map((product,index) => (
+            <div className="product-grid">
+                {products.map((product,index) => (
                     <div className="product-grid__product-card" key={index}>
                         <div className="product-grid__product-card__image-wrapper">
                             <div className="product-grid__product-card__image-wrapper__gallery">
                                 <img src={product.thumbnail} alt="Product Image" className="product-grid__product-card__image-wrapper__image"/>
-                                    <div className="product-grid__product-card__image-wrapper__arrows">
-                                        <span className="arrow left" >&#8249;</span>
-                                        <span className="arrow right" >&#8250;</span>
-                                    </div>
-                                    <div className="product-grid__product-card__image-wrapper__discount">-{product.discountPercentage}%</div>
+                                <div className="product-grid__product-card__image-wrapper__arrows">
+                                    <span className="arrow left" >&#8249;</span>
+                                    <span className="arrow right" >&#8250;</span>
+                                </div>
+                                <div className="product-grid__product-card__image-wrapper__discount">-{product.discountPercentage}%</div>
                             </div>
                         </div>
                         <h2 className="product-grid__product-card__title">{product.title}</h2>
@@ -41,8 +30,8 @@ export function ProductCard({totalProductsInPage,selectedCategory}){
                         </div>
                         <button className="product-grid__product-card__add-to-cart-button">Add to Cart</button>
                     </div>
-            ))}
+                ))}
+            </div>
         </div>
-    </div>
     )
 }

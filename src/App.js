@@ -1,11 +1,12 @@
 import './App.css';
 import {Navbar} from "./components/Navbar";
 import {MainPage} from "./pages/MainPage";
+import {SearchBar} from "./components/SearchBar";
 
 function App() {
   return (
       <>
-        <Navbar/>
+           <Navbar/>
           <MainPage/>
       </>
 
