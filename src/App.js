@@ -9,6 +9,7 @@ import {AuthProvider, useLocalStorage} from "./components/AuthComponent";
 import {useEffect} from "react";
 import {CheckoutPage} from "./pages/CheckoutPage";
 import {CartProvider} from "./components/CartContext";
+import {AccountPage} from "./pages/AccountPage";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/product/:id" element={<ProductPage/>}/>
                     <Route path="/login" element={<LoginPage/>}/>
                     <Route path="/cart" element={<CheckoutPage/>}/>
+                    <Route path="/account" element={<AccountPage/>}/>
                 </Routes>
             </CartProvider>
         </AuthProvider>

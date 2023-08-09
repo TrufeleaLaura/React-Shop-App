@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
 import {useAuth, useLocalStorage} from "./AuthComponent";
@@ -9,9 +9,9 @@ import CartBox from "./CartBox";
 import {useCart} from "./CartContext";
 
 export function Navbar() {
-    const links = ["What's new", "Login", "Cart", "Log Out"];
-    const { user, logout } = useAuth();
-    const { cartProducts,setCart } = useCart();
+    const links = ["What's new", "Login", "Cart", "Log Out", "Account"];
+    const {user, logout} = useAuth();
+    const {cartProducts, setCart} = useCart();
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
 
@@ -47,7 +47,7 @@ export function Navbar() {
         <header className="header">
             <nav className="header__navbar">
                 <div className="header__navbar__shop-name">
-                    <img src={logoPicture} alt="logo" />
+                    <img src={logoPicture} alt="logo"/>
                     <Link to="/">
                         Meta<span>Shop</span>
                     </Link>
@@ -58,6 +58,8 @@ export function Navbar() {
                         let linkPath = '/';
                         if (link === "What's new") {
                             linkPath = '/shop';
+                        } else if (link === "Account") {
+                            linkPath = '/account';
                         } else if (link === 'Login') {
                             if (!user) {
                                 linkPath = '/login';
