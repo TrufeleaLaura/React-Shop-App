@@ -1,43 +1,27 @@
-import {useFetchCartProducts} from "../components/hooksApi";
-import {useAuth} from "../components/AuthComponent";
-import {CheckoutItem} from "../components/CheckoutItem";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../components/AuthComponent";
+import { CheckoutItem } from "../components/CheckoutItem";
+import { useCart } from "../components/CartContext";
 
 export function CheckoutPage() {
-    const {user} = useAuth();
-    const [products, setProducts] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
+    const { user } = useAuth();
+    const { cartProducts, setCart } = useCart();
     const ID_CART = "64c77ddd8e88f";
+    const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
-        async function fetchProducts() {
-            try {
-                const response = await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
-                    headers: {
-                        'Internship-Auth': `${user}`
-                    }
-                });
-                const data = await response.json();
-                setProducts(data.products);
-            } catch (error) {
-                setProducts([]);
-            }
-        }
-
-        fetchProducts();
-    }, [user]);
-
-    useEffect(() => {
-        const total = products.reduce((acc, product) => {
-            const price = (product.price - (product.price * product.discountPercentage) / 100);
-            return acc + price;
-        }, 0);
-        setTotalPrice(total);
-    }, [products]);
+        setTotalPrice(
+            cartProducts.reduce((acc, product) => {
+                const price = (product.price - (product.price * product.discountPercentage) / 100) * product.quantity;
+                return acc + price;
+            }, 0)
+        );
+    }, [cartProducts]);
 
     const handleModifyQuantity = async (productId, quantity) => {
-        const product = products.find((product) => product.id === Number(productId));
         try {
+            const product = cartProducts.find((product) => product.id === Number(productId));
+
             if (product.quantity + quantity <= 0) {
                 const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}?products[]=${productId}`, {
                     method: 'DELETE',
@@ -48,37 +32,27 @@ export function CheckoutPage() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setProducts(data.data.products);
-                    const total = data.data.products.reduce((acc, product) => {
-                        const price = (product.price - (product.price * product.discountPercentage) / 100);
-                        return acc + price * product.quantity;
-                    }, 0);
-                    setTotalPrice(total);
-                } else {
-                    const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/64c77ddd8e88f`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Internship-Auth': `${user}`
-                        },
-                        body: JSON.stringify({
-                            products: [
-                                {
-                                    id: productId,
-                                    quantity: quantity
-                                }
-                            ]
-                        })
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        setProducts(data.data.products);
-                        const total = data.data.products.reduce((acc, product) => {
-                            const price = (product.price - (product.price * product.discountPercentage) / 100);
-                            return acc + price * product.quantity;
-                        }, 0);
-                        setTotalPrice(total);
-                    }
+                    setCart(data.data.products);
+                }
+            } else {
+                const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/64c77ddd8e88f`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Internship-Auth': `${user}`
+                    },
+                    body: JSON.stringify({
+                        products: [
+                            {
+                                id: productId,
+                                quantity: quantity
+                            }
+                        ]
+                    })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setCart(data.data.products);
                 }
             }
         } catch (error) {
@@ -91,10 +65,10 @@ export function CheckoutPage() {
             <div className="checkout-window">
                 <p className="checkout-window-text">Your products added to the shopping cart:</p>
                 <div className="checkout-window__grid">
-                    {products.map((product) => (
+                    {cartProducts.map((product) => (
                         <CheckoutItem key={product.id} product={product}
                                       onIncrease={() => handleModifyQuantity(product.id, 1)}
-                                      onDecrease={() => handleModifyQuantity(product.id, -1)}/>
+                                      onDecrease={() => handleModifyQuantity(product.id, -1)} />
                     ))}
                 </div>
             </div>

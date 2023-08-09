@@ -6,16 +6,18 @@ import {SearchBar} from "../components/SearchBar";
 import "../components/componentsCSS.css";
 import _debounce from 'lodash/debounce';
 import {useAuth, useLocalStorage} from "../components/AuthComponent";
+import {useCart} from "../components/CartContext";
 
 export function MainPage() {
     const ID_CART = "64c77ddd8e88f";
     const {user} = useAuth();
+    const {cartProducts, setCart,addToCart} = useCart();
     const [productsInPage, setProductsInPage] = useState(9);
     const [products, setProducts] = useFetchProductsInitial();
     const [categories, setCategories] = useState(["All Products", ...new Set(products.map((product) => product.category))]);
     const [selectedCategory, setSelectedCategory] = useState("All Products");
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [cartStorageValue, setCartStorageValue] = useLocalStorage('cartLocalStorage', []);
+
 
     useEffect(() => {
         if(products.length > 0){
@@ -75,7 +77,7 @@ export function MainPage() {
     };
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            const response = await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
+            await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,22 +91,16 @@ export function MainPage() {
                         }
                     ]
                 })
-            });
-            if (!response.ok) {
-                throw new Error(`Request failed with status ${response.status}`);
-            }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Request failed with status ${response.status}`);
+                    }
+                    return response.json();
+                })
+            addToCart(product,quantity);
+            console.log(cartProducts);
 
-            setCartStorageValue(existingCart => {
-                const updatedCart = [...existingCart];
-                const productInCart = updatedCart.find(item => item.id === Number(product.id));
-
-                if (productInCart) {
-                    productInCart.quantity += quantity;
-                } else {
-                    updatedCart.push({ ...product, quantity: 1 });
-                }
-                return updatedCart;
-            });
         } catch (error) {
             console.error('Error adding product to cart:', error);
         }

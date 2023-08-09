@@ -2,16 +2,22 @@ import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import CartItemMainPage from "./CartItemMainPage";
 import {useLocalStorage} from "./AuthComponent";
+import {useCart} from "./CartContext";
 
-const CartBox = ({ user, cartProducts }) => {
+const CartBox = ({ user,cartProducts }) => {
+
     const [isCartVisible, setCartVisible] = useState(false);
 
-
+    useEffect(() => {
+        if(cartProducts.length===0){
+            setCartVisible(false);
+        }
+    },[cartProducts]);
     const handleCartToggle = () => {
         setCartVisible(!isCartVisible);
     };
 
-    const cartLinkContent = user ? (
+    const cartLinkContent = user  ? (
         <>
             Cart: ({cartProducts.length})
             {isCartVisible && (

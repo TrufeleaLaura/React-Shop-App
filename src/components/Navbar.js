@@ -6,16 +6,17 @@ import {useAuth, useLocalStorage} from "./AuthComponent";
 import {useFetchCartProducts} from "./hooksApi";
 import CartItemMainPage from "./CartItemMainPage";
 import CartBox from "./CartBox";
+import {useCart} from "./CartContext";
 
 export function Navbar() {
     const links = ["What's new", "Login", "Cart", "Log Out"];
     const { user, logout } = useAuth();
+    const { cartProducts,setCart } = useCart();
+    const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
-    const [cartLocalStorage, setCartLocalStorage] = useLocalStorage("cartLocalStorage",[]);
 
     useEffect(() => {
-        console.log("aicinavbar")
-    },[cartLocalStorage]);
+    }, [useCart]);
 
     useEffect(() => {
         if (user) {
@@ -36,9 +37,9 @@ export function Navbar() {
                 }
             });
             const data = await response.json();
-            setCartLocalStorage(data.products);
+            setCart(data.products);
         } catch (error) {
-            setCartLocalStorage([]);
+            console.log(error);
         }
     };
 
@@ -68,7 +69,7 @@ export function Navbar() {
                                 <CartBox
                                     key={index}
                                     user={user}
-                                    cartProducts={cartLocalStorage}
+                                    cartProducts={cartProducts}
                                 />
                             );
                         } else if (link === 'Log Out') {
