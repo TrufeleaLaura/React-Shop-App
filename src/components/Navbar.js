@@ -2,15 +2,21 @@ import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
-import { useAuth } from "./AuthComponent";
+import {useAuth, useLocalStorage} from "./AuthComponent";
 import {useFetchCartProducts} from "./hooksApi";
-import CartItem from "./CartItem";
+import CartItemMainPage from "./CartItemMainPage";
+import CartBox from "./CartBox";
 
 export function Navbar() {
     const links = ["What's new", "Login", "Cart", "Log Out"];
     const { user, logout } = useAuth();
+    const [cartLocalStorage, setCartLocalStorage] = useLocalStorage("cartLocalStorage", null);
     const [isCartVisible, setCartVisible] = useState(false);
     const [cartProducts, setCartProducts] = useState([]);
+
+    useEffect(() => {
+            setCartProducts(cartLocalStorage);
+    }, [cartLocalStorage]);
 
 
     const handleCartToggle = () => {
@@ -32,31 +38,12 @@ export function Navbar() {
             });
             const data = await response.json();
             setCartProducts(data.products);
+            setCartLocalStorage(data.products);
         } catch (error) {
             setCartProducts([]);
         }
     };
 
-    const cartLinkContent = user ? (
-        <>
-            Cart: ({cartProducts.length})
-            {isCartVisible && (
-                <div className="cart-window">
-                    {cartProducts.length === 0 ? (
-                        <p className="empty-cart">YOUR CART IS EMPTY</p>
-                    ) : (
-                        <ul className="cart-window-list">
-                            {cartProducts.map((item) => (
-                                <CartItem key={item.id} product={item} />
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            )}
-        </>
-    ) : (
-        'Cart:(0)'
-    );
     return (
         <header className="header">
             <nav className="header__navbar">
@@ -80,22 +67,11 @@ export function Navbar() {
                             }
                         } else if (link === 'Cart') {
                             return (
-                                <div key={index} className="cart-container">
-                                    {user ? (
-                                        <Link
-                                            to="/cart"
-                                            className="cart-link"
-                                            onMouseEnter={handleCartToggle}
-                                            onMouseLeave={handleCartToggle}
-                                        >
-                                            {cartLinkContent}
-                                        </Link>
-                                    ) : (
-                                        <Link to="/login" className="cart-link">
-                                            {cartLinkContent}
-                                        </Link>
-                                    )}
-                                </div>
+                                <CartBox
+                                    key={index}
+                                    user={user}
+                                    cartProducts={cartProducts}
+                                />
                             );
                         } else if (link === 'Log Out') {
                             if (user) {

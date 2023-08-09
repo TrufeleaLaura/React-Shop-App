@@ -1,11 +1,13 @@
 import {Link} from "react-router-dom";
+import {useState} from "react";
 
-export function ProductCard({products}){
+export function ProductCard({products,handleAddToCart}) {
+
     return (
         <div className="main">
             <div className="product-grid">
                 {products.map((product,index) => (
-                    <Link to={`/product/${product.id}`} key={index}>
+
                     <div className="product-grid__product-card" key={index}>
                         <div className="product-grid__product-card__image-wrapper">
                             <div className="product-grid__product-card__image-wrapper__gallery">
@@ -17,21 +19,24 @@ export function ProductCard({products}){
                                 <div className="product-grid__product-card__image-wrapper__discount">-{product.discountPercentage}%</div>
                             </div>
                         </div>
-                        <h2 className="product-grid__product-card__title">{product.title}</h2>
-                        <div className="product-grid__product-card__prices">
+                        <Link to={`/product/${product.id}`} key={index}>
+                        <h2 className="product-grid__product-card__title" >{product.title}</h2>
+                        <div className="product-grid__product-card__prices" style={{color:"black"}}>
                             <p className="product-grid__product-card__price__initial"> ${product.price}</p>
                             <p className="product-grid__product-card__price__final">${(product.price - (product.price * product.discountPercentage / 100).toFixed(2))}</p>
                         </div>
-                        <p className="product-grid__product-card__description">{product.description}</p>
-                        <div className="product-grid__product-card__product-details">
+                        <p className="product-grid__product-card__description" style={{color:"black"}}>{product.description}</p>
+                        <div className="product-grid__product-card__product-details" style={{color:"black"}}>
                             <div className="brand">Brand: {product.brand}</div>
                             <div className="category">Category: {product.category}</div>
                             <div className="stock">Stock: {product.stock}</div>
                             <div className="rating">Rating:{product.rating}</div>
                         </div>
-                        <button className="product-grid__product-card__add-to-cart-button">Add to Cart</button>
+                        </Link>
+                        <button className="product-grid__product-card__add-to-cart-button"
+                                onClick={() => handleAddToCart(product)}>Add to Cart</button>
                     </div>
-                    </Link>
+
                 ))}
             </div>
         </div>
