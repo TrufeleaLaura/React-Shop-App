@@ -73,13 +73,13 @@ export function MainPage() {
                 product.title.toLowerCase().includes(searchTerm)));
         }
     };
-    const handleAddToCart = async (product,quantity=1) => {
+    const handleAddToCart = async (product, quantity = 1) => {
         try {
             const response = await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                   'Internship-Auth': `${user}`,
+                    'Internship-Auth': `${user}`,
                 },
                 body: JSON.stringify({
                     products: [
@@ -94,15 +94,17 @@ export function MainPage() {
                 throw new Error(`Request failed with status ${response.status}`);
             }
 
-            const existingCart = [...cartStorageValue];
-            const productInCart = existingCart.find((item) => item.id === Number(product.id));
+            setCartStorageValue(existingCart => {
+                const updatedCart = [...existingCart];
+                const productInCart = updatedCart.find(item => item.id === Number(product.id));
 
-            if (productInCart) {
-                productInCart.quantity+=quantity;
-            } else {
-                existingCart.push({ ...product, quantity: 1 });
-            }
-            setCartStorageValue(existingCart);
+                if (productInCart) {
+                    productInCart.quantity += quantity;
+                } else {
+                    updatedCart.push({ ...product, quantity: 1 });
+                }
+                return updatedCart;
+            });
         } catch (error) {
             console.error('Error adding product to cart:', error);
         }

@@ -3,29 +3,30 @@ import { Link } from "react-router-dom";
 import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
 import {useAuth, useLocalStorage} from "./AuthComponent";
+import {useFetchCartProducts} from "./hooksApi";
+import CartItemMainPage from "./CartItemMainPage";
 import CartBox from "./CartBox";
 
 export function Navbar() {
     const links = ["What's new", "Login", "Cart", "Log Out"];
     const { user, logout } = useAuth();
-    const [cartLocalStorage, setCartLocalStorage] = useLocalStorage("cartLocalStorage", null);
     const [isCartVisible, setCartVisible] = useState(false);
-
+    const [cartLocalStorage, setCartLocalStorage] = useLocalStorage("cartLocalStorage",[]);
 
     useEffect(() => {
-            setCartLocalStorage(cartLocalStorage);
-    }, [cartLocalStorage]);
-
-
-    const handleCartToggle = () => {
-        setCartVisible(!isCartVisible);
-    };
+        console.log("aicinavbar")
+    },[cartLocalStorage]);
 
     useEffect(() => {
         if (user) {
             fetchProducts();
         }
     }, [user]);
+
+
+    const handleCartToggle = () => {
+        setCartVisible(!isCartVisible);
+    };
 
     const fetchProducts = async () => {
         try {
@@ -35,10 +36,9 @@ export function Navbar() {
                 }
             });
             const data = await response.json();
-
             setCartLocalStorage(data.products);
         } catch (error) {
-            console.log(error)
+            setCartLocalStorage([]);
         }
     };
 

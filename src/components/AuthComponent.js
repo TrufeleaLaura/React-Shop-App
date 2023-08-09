@@ -52,14 +52,17 @@ export const useLocalStorage = (keyName, defaultValue) => {
             return defaultValue;
         }
     });
-    const setValue = (newValue) => {
+
+    useEffect(() => {
         try {
-            window.localStorage.setItem(keyName, JSON.stringify(newValue));
+            console.log("aici");
+            window.localStorage.setItem(keyName, JSON.stringify(storedValue));
         } catch (err) {}
-        setStoredValue(newValue);
-    };
-    return [storedValue, setValue];
+    }, [keyName, storedValue]);
+
+    return [storedValue, setStoredValue];
 };
+
 
 
 export const ProtectedRoute = ({ children }) => {
