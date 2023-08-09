@@ -2,6 +2,40 @@ import {Link} from "react-router-dom";
 import {useState} from "react";
 
 export function ProductCard({products,handleAddToCart}) {
+    const [addToCartStatus, setAddToCartStatus] = useState({
+        clicked: false,
+        initialColor: "white",
+        initialText: "Add To Cart"
+    });
+
+    const handleAddToCartClick = async (product) => {
+        if (!addToCartStatus.clicked) {
+            const initialColor = "#023020";
+            const initialText = "Added to cart";
+
+            setAddToCartStatus({
+                clicked: true,
+                initialColor: "green",
+                initialText: "Added to cart"
+            });
+
+            product.style.backgroundColor = initialColor;
+            product.textContent = initialText;
+
+            await handleAddToCart(product);
+
+            setTimeout(() => {
+                product.style.backgroundColor = addToCartStatus.initialColor ;
+                product.textContent = addToCartStatus.initialText ;
+                setAddToCartStatus({
+                    clicked: false,
+                    initialColor: '',
+                    initialText: ''
+                });
+            }, 1500);
+        }
+    };
+
 
     return (
         <div className="main">
@@ -34,7 +68,7 @@ export function ProductCard({products,handleAddToCart}) {
                         </div>
                         </Link>
                         <button className="product-grid__product-card__add-to-cart-button"
-                                onClick={() => handleAddToCart(product)}>Add to Cart</button>
+                                onClick={() => handleAddToCartClick(product)}>Add to Cart</button>
                     </div>
 
                 ))}

@@ -5,9 +5,25 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
-import {AuthProvider} from "./components/AuthComponent";
+import {AuthProvider, useLocalStorage} from "./components/AuthComponent";
+import {useEffect} from "react";
 
 function App() {
+    const [cartStorageValue, setCartStorageValue] = useLocalStorage('cartLocalStorage', []);
+
+    useEffect(() => {
+        const storageListener = (event) => {
+            if (event.key === 'cartLocalStorage') {
+                setCartStorageValue(JSON.parse(event.newValue));
+            }
+        };
+
+        window.addEventListener('storage', storageListener);
+
+        return () => {
+            window.removeEventListener('storage', storageListener);
+        };
+    }, []);
   return (
           <AuthProvider>
               <Navbar/>

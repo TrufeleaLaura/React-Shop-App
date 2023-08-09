@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
 import {useAuth, useLocalStorage} from "./AuthComponent";
-import {useFetchCartProducts} from "./hooksApi";
-import CartItemMainPage from "./CartItemMainPage";
 import CartBox from "./CartBox";
 
 export function Navbar() {
@@ -12,10 +10,10 @@ export function Navbar() {
     const { user, logout } = useAuth();
     const [cartLocalStorage, setCartLocalStorage] = useLocalStorage("cartLocalStorage", null);
     const [isCartVisible, setCartVisible] = useState(false);
-    const [cartProducts, setCartProducts] = useState([]);
+
 
     useEffect(() => {
-            setCartProducts(cartLocalStorage);
+            setCartLocalStorage(cartLocalStorage);
     }, [cartLocalStorage]);
 
 
@@ -37,10 +35,10 @@ export function Navbar() {
                 }
             });
             const data = await response.json();
-            setCartProducts(data.products);
+
             setCartLocalStorage(data.products);
         } catch (error) {
-            setCartProducts([]);
+            console.log(error)
         }
     };
 
@@ -70,7 +68,7 @@ export function Navbar() {
                                 <CartBox
                                     key={index}
                                     user={user}
-                                    cartProducts={cartProducts}
+                                    cartProducts={cartLocalStorage}
                                 />
                             );
                         } else if (link === 'Log Out') {
