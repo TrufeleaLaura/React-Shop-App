@@ -99,7 +99,6 @@ export function Navbar() {
                             );
                         } else if (link === 'Log Out') {
                             if (user) {
-                                logout();
                                 return (
                                     <Link to={linkPath} key={index} onClick={logout}>
                                         {link}
