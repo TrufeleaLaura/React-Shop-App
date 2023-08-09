@@ -7,6 +7,7 @@ import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
 import {AuthProvider, useLocalStorage} from "./components/AuthComponent";
 import {useEffect} from "react";
+import {CheckoutPage} from "./pages/CheckoutPage";
 
 function App() {
     const [cartStorageValue, setCartStorageValue] = useLocalStorage('cartLocalStorage', []);
@@ -32,6 +33,7 @@ function App() {
                   <Route path="/shop" element={<MainPage/>}/>
                   <Route path="/product/:id" element={<ProductPage/>}/>
                   <Route path="/login" element={<LoginPage/>}/>
+                  <Route path="/cart" element={<CheckoutPage/>}/>
               </Routes>
           </AuthProvider>
   );

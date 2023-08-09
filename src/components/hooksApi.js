@@ -20,6 +20,7 @@ export function useFetchProductsInitial(api = 'https://dummyjson.com/products/?l
 
     return [products, setProducts];
 }
+
 export function useFetchCartProducts(api = `https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, headers = {}) {
     const [products, setProducts] = useState([]);
     useEffect(() => {
