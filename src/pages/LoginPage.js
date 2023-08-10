@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './pagesCSS.css';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
@@ -7,26 +7,29 @@ function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const {login} = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        document.getElementById("invalid").style.display = "none";
         try {
             const response = await fetch('http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({email, password})
             });
 
             if (response.ok) {
                 const data = await response.json();
-                const { token } = data;
+                const {token} = data;
                 login(token);
                 navigate('/shop');
             } else {
-                console.error('Login failed');
+                document.getElementById("invalid").style.display = "block";
+                setEmail('');
+                setPassword('');
             }
         } catch (error) {
             console.error('Error during login:', error);
@@ -59,6 +62,8 @@ function LoginPage() {
                     />
                 </div>
                 <button className="login-button" type="submit">Login</button>
+                <p className="invalid-account" id={"invalid"} style={{display: "none", color: "red"}}>Email or password
+                    is not correct! </p>
             </form>
         </div>
     );

@@ -55,7 +55,6 @@ export const useLocalStorage = (keyName, defaultValue) => {
 
     useEffect(() => {
         try {
-            console.log("aici");
             window.localStorage.setItem(keyName, JSON.stringify(storedValue));
         } catch (err) {}
     }, [keyName, storedValue]);
