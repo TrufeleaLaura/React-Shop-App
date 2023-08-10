@@ -1,6 +1,7 @@
 import {Link} from "react-router-dom";
 import React, {useState} from "react";
 import {useAuth} from "./AuthComponent";
+import {useSelector} from "react-redux";
 
 
 export function ProductCard({products,handleAddToCart}) {
@@ -22,7 +23,6 @@ export function ProductCard({products,handleAddToCart}) {
         <div className="main">
             <div className="product-grid">
                 {products.map((product,index) => (
-
                     <div className="product-grid__product-card" key={index}>
                         <div className="product-grid__product-card__image-wrapper">
                             <div className="product-grid__product-card__image-wrapper__gallery">

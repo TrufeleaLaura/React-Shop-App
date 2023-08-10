@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthComponent";
 import { CheckoutItem } from "../components/CheckoutItem";
-import { useCart } from "../components/CartContext";
+import {useDispatch, useSelector} from "react-redux";
+import {setCart} from "../redux/cartRedux";
 
 export function CheckoutPage() {
     const { user } = useAuth();
-    const { cartProducts, setCart } = useCart();
+    //const { cartProducts, setCart } = useCart();
+    const cartProducts = useSelector(state => state.cart);
+    const dispatch = useDispatch();
     const ID_CART = "64c77ddd8e88f";
     const [totalPrice, setTotalPrice] = useState(0);
 
@@ -32,7 +35,7 @@ export function CheckoutPage() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setCart(data.data.products);
+                    dispatch(setCart(data.data.products));
                 }
             } else {
                 const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/64c77ddd8e88f`, {
@@ -52,7 +55,7 @@ export function CheckoutPage() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setCart(data.data.products);
+                    dispatch(setCart(data.data.products));
                 }
             }
         } catch (error) {

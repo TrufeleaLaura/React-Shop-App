@@ -1,29 +1,40 @@
 import { useEffect, useState } from "react";
-import { CategoryFilter } from "../components/FilterSearch";
+import { CategoryFilter } from "../components/FilterBar";
 import { ProductCard } from "../components/ProductCard";
 import {getProducts, useFetchProductsInitial} from "../components/hooksApi";
 import {SearchBar} from "../components/SearchBar";
 import "../components/componentsCSS.css";
 import _debounce from 'lodash/debounce';
-import {useAuth, useLocalStorage} from "../components/AuthComponent";
-import {useCart} from "../components/CartContext";
+import {useAuth} from "../components/AuthComponent";
+import {useDispatch, useSelector} from "react-redux";
+import { setProducts} from "../redux/productsRedux";
+import {fetchInitialProducts} from "../redux/productThunk";
+import {addToCart, setCart} from "../redux/cartRedux";
 
 export function MainPage() {
     const ID_CART = "64c77ddd8e88f";
     const {user} = useAuth();
-    const {cartProducts, setCart,addToCart} = useCart();
     const [productsInPage, setProductsInPage] = useState(9);
-    const [products, setProducts] = useFetchProductsInitial();
-    const [categories, setCategories] = useState(["All Products", ...new Set(products.map((product) => product.category))]);
+    const products= useSelector(state => state.products);
+    const [categories, setCategories] = useState(["All Products"]);
+    const dispatch = useDispatch();
     const [selectedCategory, setSelectedCategory] = useState("All Products");
     const [filteredProducts, setFilteredProducts] = useState(products);
 
+    useEffect(() => {
+        dispatch(fetchInitialProducts());
+    }, []);
 
     useEffect(() => {
-        if(products.length > 0){
+        if (products.length > 0) {
             setFilteredProducts(products);
+            const updatedCategories = [
+                "All Products",
+                ...new Set(products.map((product) => product.category)),
+            ];
+            setCategories(updatedCategories);
         }
-    },[products]);
+    }, [products]);
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
@@ -45,7 +56,7 @@ export function MainPage() {
 
                 getProducts(`https://dummyjson.com/products?limit=9&skip=${productsAlreadyInPage}&select=title,price,description,discountPercentage,rating,stock,brand,category,thumbnail,images,discountedPrice`)
                     .then(data => {
-                        setProducts(prevProducts => [...prevProducts, ...data]);
+                        dispatch(setProducts(data));
                         setProductsInPage(newProductsInPage);
                     })
                     .catch(error => {
@@ -60,10 +71,6 @@ export function MainPage() {
         };
     }, [productsInPage,selectedCategory]);
 
-    useEffect(() => {
-        const categories = ["All Products", ...new Set(products.map((product) => product.category))];
-        setCategories(categories);
-    }, [products]);
 
 
     const handleSearch= (searchValue) => {
@@ -98,19 +105,21 @@ export function MainPage() {
                     }
                     return response.json();
                 })
-            addToCart(product,quantity);
-            console.log(cartProducts);
+            setCart(addToCart(product,quantity));
 
         } catch (error) {
             console.error('Error adding product to cart:', error);
         }
     };
 
-
+    useEffect(() => {
+        const categories = ["All Products", ...new Set(products.map((product) => product.category))];
+        setCategories(categories);
+    }, [products]);
 
     return (
         <>
-            <CategoryFilter categories={categories} onClickCategory={handleCategoryChange} />
+            <CategoryFilter  categories ={categories} onClickCategory={handleCategoryChange} />
             <SearchBar onChangeSearch={(value)=>handleSearch(value)} />
             <ProductCard products={filteredProducts} handleAddToCart={handleAddToCart} />
         </>

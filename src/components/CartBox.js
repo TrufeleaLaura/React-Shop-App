@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import CartItemMainPage from "./CartItemMainPage";
 import {useLocalStorage} from "./AuthComponent";
-import {useCart} from "./CartContext";
+
 
 const CartBox = ({ user,cartProducts }) => {
 

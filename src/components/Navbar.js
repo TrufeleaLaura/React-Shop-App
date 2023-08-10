@@ -2,21 +2,19 @@ import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
-import {useAuth, useLocalStorage} from "./AuthComponent";
-import {useFetchCartProducts} from "./hooksApi";
-import CartItemMainPage from "./CartItemMainPage";
+import {useAuth} from "./AuthComponent";
 import CartBox from "./CartBox";
-import {useCart} from "./CartContext";
+
+import {useDispatch, useSelector} from "react-redux";
+import {setCart} from "../redux/cartRedux";
 
 export function Navbar() {
     const links = ["What's new", "Login", "Cart", "Log Out", "Account"];
     const {user, logout} = useAuth();
-    const {cartProducts, setCart} = useCart();
-    const [cartItems, setCartItems] = useState([]);
-    const [isCartVisible, setCartVisible] = useState(false);
+    const cartProducts = useSelector(state => state.cart);
+    const dispatch = useDispatch();
 
-    useEffect(() => {
-    }, [useCart]);
+
 
     useEffect(() => {
         if (user) {
@@ -24,10 +22,6 @@ export function Navbar() {
         }
     }, [user]);
 
-
-    const handleCartToggle = () => {
-        setCartVisible(!isCartVisible);
-    };
 
     const fetchProducts = async () => {
         try {
@@ -37,7 +31,7 @@ export function Navbar() {
                 }
             });
             const data = await response.json();
-            setCart(data.products);
+            dispatch(setCart(data.products));
         } catch (error) {
             console.log(error);
         }

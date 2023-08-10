@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import './pagesCSS.css';
 import {useParams} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
-import {useCart} from "../components/CartContext";
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {addToCart} from "../redux/cartRedux";
 
 
 function ProductPage() {
@@ -11,7 +12,8 @@ function ProductPage() {
     const { id } = useParams();
     const {user}=useAuth();
     const ID_CART = "64c77ddd8e88f";
-    const {addToCart,cartProducts}=useCart();
+    const cartProducts = useSelector(state => state.cart);
+    const dispatch = useDispatch();
     const [product, setProduct] = useState(null);
 
     const handleAddClick = () => {
@@ -65,7 +67,7 @@ function ProductPage() {
                     }
                     return response.json();
                 })
-            addToCart(product,quantity);
+            dispatch(addToCart(product,quantity));
             console.log(cartProducts);
 
         } catch (error) {

@@ -8,13 +8,13 @@ import LoginPage from "./pages/LoginPage";
 import {AuthProvider, ProtectedRoute, useLocalStorage} from "./components/AuthComponent";
 import {useEffect} from "react";
 import {CheckoutPage} from "./pages/CheckoutPage";
-import {CartProvider} from "./components/CartContext";
+
 import {AccountPage} from "./pages/AccountPage";
 
 function App() {
     return (
         <AuthProvider>
-            <CartProvider>
+
                 <Navbar/>
                 <Routes>
                     <Route path="/" element={<HomePage/>}/>
@@ -24,7 +24,7 @@ function App() {
                     <Route path="/cart" element={<CheckoutPage/>}/>
                     <Route path="/account" element={<AccountPage/>}/>
                 </Routes>
-            </CartProvider>
+
         </AuthProvider>
     );
 }
