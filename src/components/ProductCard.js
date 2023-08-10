@@ -1,7 +1,23 @@
 import {Link} from "react-router-dom";
+import React, {useState} from "react";
+import {useAuth} from "./AuthComponent";
 
 
 export function ProductCard({products,handleAddToCart}) {
+    const {user}=useAuth();
+    const [addedProducts, setAddedProducts] = useState({});
+
+    const handleAddClick = (product) => {
+        handleAddToCart(product, 1);
+        setAddedProducts((prevAddedProducts) => {
+            return { ...prevAddedProducts, [product.id]: true };
+        });
+        setTimeout(() => {
+            setAddedProducts((prevAddedProducts) => {
+                return { ...prevAddedProducts, [product.id]: false };
+            });
+        }, 2000);
+    };
     return (
         <div className="main">
             <div className="product-grid">
@@ -11,10 +27,10 @@ export function ProductCard({products,handleAddToCart}) {
                         <div className="product-grid__product-card__image-wrapper">
                             <div className="product-grid__product-card__image-wrapper__gallery">
                                 <img src={product.thumbnail} alt="Product Image" className="product-grid__product-card__image-wrapper__image"/>
-                                <div className="product-grid__product-card__image-wrapper__arrows">
-                                    <span className="arrow left" >&#8249;</span>
-                                    <span className="arrow right" >&#8250;</span>
-                                </div>
+                                {/*<div className="product-grid__product-card__image-wrapper__arrows">*/}
+                                {/*    <span className="arrow left" >&#8249;</span>*/}
+                                {/*    <span className="arrow right" >&#8250;</span>*/}
+                                {/*</div>*/}
                                 <div className="product-grid__product-card__image-wrapper__discount">-{product.discountPercentage}%</div>
                             </div>
                         </div>
@@ -32,8 +48,18 @@ export function ProductCard({products,handleAddToCart}) {
                                 <div className="rating">Rating:{product.rating}</div>
                             </div>
                         </Link>
-                        <button className="product-grid__product-card__add-to-cart-button"
-                                onClick={() => handleAddToCart(product)}>Add to Cart</button>
+                        {user ? (
+                            <button
+                                className={`product-grid__product-card__add-to-cart-button ${addedProducts[product.id] ? 'added' : ''}`}
+                                onClick={() => handleAddClick(product)}
+                            >
+                                {addedProducts[product.id] ? 'Added!' : 'Add to Cart'}
+                            </button>
+                        ) : (
+                            <Link to="/login">
+                                <button className="product-grid__product-card__add-to-cart-button">Add To Cart</button>
+                            </Link>
+                        )}
                     </div>
 
                 ))}

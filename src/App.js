@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
-import {AuthProvider, useLocalStorage} from "./components/AuthComponent";
+import {AuthProvider, ProtectedRoute, useLocalStorage} from "./components/AuthComponent";
 import {useEffect} from "react";
 import {CheckoutPage} from "./pages/CheckoutPage";
 import {CartProvider} from "./components/CartContext";

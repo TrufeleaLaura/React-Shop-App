@@ -258,3 +258,9 @@ input {
     text-align: center;
     margin-top: 2rem;
 }
+
+.product-page__details__add-to-cart-button.added{
+    background-color: green;
+    scale:1.3;
+
+}

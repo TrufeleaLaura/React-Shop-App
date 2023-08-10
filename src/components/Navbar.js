@@ -67,13 +67,17 @@ export function Navbar() {
                                 return null;
                             }
                         } else if (link === 'Cart') {
-                            return (
-                                <CartBox
-                                    key={index}
-                                    user={user}
-                                    cartProducts={cartProducts}
-                                />
-                            );
+                            if(!user) {
+                                linkPath = '/login';
+                            } else {
+                                return (
+                                    <CartBox
+                                        key={index}
+                                        user={user}
+                                        cartProducts={cartProducts}
+                                    />
+                                );
+                            }
                         } else if (link === 'Log Out') {
                             if (user) {
                                 return (

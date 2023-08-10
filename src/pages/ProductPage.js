@@ -1,11 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import './pagesCSS.css';
 import {useParams} from "react-router-dom";
+import {useAuth} from "../components/AuthComponent";
+import {useCart} from "../components/CartContext";
+import {Link} from "react-router-dom";
 
 
 function ProductPage() {
+    const [isAdded, setIsAdded] = useState(false);
     const { id } = useParams();
+    const {user}=useAuth();
+    const ID_CART = "64c77ddd8e88f";
+    const {addToCart,cartProducts}=useCart();
     const [product, setProduct] = useState(null);
+
+    const handleAddClick = () => {
+        handleAddToCart(product, 1);
+        setIsAdded(true);
+        setTimeout(() => {
+            setIsAdded(false);
+        }, 2000);
+    };
+
+
 
     async function fetchData() {
         try {
@@ -19,11 +36,43 @@ function ProductPage() {
 
     useEffect(() => {
         fetchData();
-    }, [id]);
+    }, []);
 
     if (!product) {
         return <div>Loading...</div>;
     }
+
+    const handleAddToCart = async (product, quantity = 1) => {
+        try {
+            await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Internship-Auth': `${user}`,
+                },
+                body: JSON.stringify({
+                    products: [
+                        {
+                            id: product.id,
+                            quantity: quantity,
+                        }
+                    ]
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Request failed with status ${response.status}`);
+                    }
+                    return response.json();
+                })
+            addToCart(product,quantity);
+            console.log(cartProducts);
+
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
+    };
+
 
     return (
         <div className="product-page">
@@ -50,7 +99,11 @@ function ProductPage() {
                     <div className="product-page__details__detail">Stock: {product.stock}</div>
                     <div className="product-page__details__detail">Rating: {product.rating}</div>
                 </div>
-                <button className="product-page__details__add-to-cart-button">Add to Cart</button>
+                {user ? (
+                <button className={`product-page__details__add-to-cart-button ${isAdded ? 'added' : ''}`} onClick={handleAddClick}>{isAdded ? 'Added!' : 'Add to Cart'}</button>)
+                    : (<Link to="/login">
+                        <button className={`product-page__details__add-to-cart-button`}>Login to Add</button>
+                    </Link>)}
             </div>
         </div>
     );
