@@ -14,7 +14,6 @@ import {AccountPage} from "./pages/AccountPage";
 function App() {
     return (
         <AuthProvider>
-
                 <Navbar/>
                 <Routes>
                     <Route path="/" element={<HomePage/>}/>
@@ -24,7 +23,6 @@ function App() {
                     <Route path="/cart" element={<CheckoutPage/>}/>
                     <Route path="/account" element={<AccountPage/>}/>
                 </Routes>
-
         </AuthProvider>
     );
 }

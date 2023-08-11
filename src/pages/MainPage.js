@@ -9,7 +9,8 @@ import {useAuth} from "../components/AuthComponent";
 import {useDispatch, useSelector} from "react-redux";
 import { setProducts} from "../redux/productsRedux";
 import {fetchInitialProducts} from "../redux/productThunk";
-import {addToCart, setCart} from "../redux/cartRedux";
+import { setCart} from "../redux/cartRedux";
+const {useUpdateCartMutation} = require("../redux/apiRedux");
 
 export function MainPage() {
     const ID_CART = "64c77ddd8e88f";
@@ -18,6 +19,7 @@ export function MainPage() {
     const products= useSelector(state => state.products);
     const [categories, setCategories] = useState(["All Products"]);
     const dispatch = useDispatch();
+    const [updateCart] = useUpdateCartMutation();
     const [selectedCategory, setSelectedCategory] = useState("All Products");
     const [filteredProducts, setFilteredProducts] = useState(products);
 
@@ -84,28 +86,10 @@ export function MainPage() {
     };
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Internship-Auth': `${user}`,
-                },
-                body: JSON.stringify({
-                    products: [
-                        {
-                            id: product.id,
-                            quantity: quantity,
-                        }
-                    ]
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Request failed with status ${response.status}`);
-                    }
-                    return response.json();
-                })
-            setCart(addToCart(product,quantity));
+            const response = await updateCart({token:user,product:[{id:Number(product.id),quantity:quantity}]});
+            if(response.data){
+                dispatch(setCart(response.data.data.products));
+            }
 
         } catch (error) {
             console.error('Error adding product to cart:', error);

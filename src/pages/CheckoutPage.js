@@ -3,13 +3,16 @@ import { useAuth } from "../components/AuthComponent";
 import { CheckoutItem } from "../components/CheckoutItem";
 import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
+import {useRemoveFromCartMutation, useUpdateCartMutation} from "../redux/apiRedux";
+
+
 
 export function CheckoutPage() {
     const { user } = useAuth();
-    //const { cartProducts, setCart } = useCart();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
-    const ID_CART = "64c77ddd8e88f";
+    const [updateCart]=useUpdateCartMutation();
+    const [removeFromCart]=useRemoveFromCartMutation();
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
@@ -26,37 +29,18 @@ export function CheckoutPage() {
             const product = cartProducts.find((product) => product.id === Number(productId));
 
             if (product.quantity + quantity <= 0) {
-                const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}?products[]=${productId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Internship-Auth': `${user}`
-                    },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    dispatch(setCart(data.data.products));
+                console.log(productId)
+               const response=await removeFromCart({token:user,productId:Number(productId)});
+                if (response.data) {
+                    dispatch(setCart(response.data.data.products));
                 }
             } else {
-                const response = await fetch(`http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/64c77ddd8e88f`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Internship-Auth': `${user}`
-                    },
-                    body: JSON.stringify({
-                        products: [
-                            {
-                                id: productId,
-                                quantity: quantity
-                            }
-                        ]
-                    })
+                const response = await updateCart({token:user,product:[{id:Number(productId),quantity:quantity}]
                 });
-                if (response.ok) {
-                    const data = await response.json();
-                    dispatch(setCart(data.data.products));
+                if (response.data) {
+                    dispatch(setCart(response.data.data.products));
                 }
+
             }
         } catch (error) {
             console.error('Error modifying product quantity:', error);

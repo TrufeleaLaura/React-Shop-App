@@ -4,15 +4,14 @@ import {useParams} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {addToCart} from "../redux/cartRedux";
-
+import { setCart} from "../redux/cartRedux";
+import {useUpdateCartMutation} from "../redux/apiRedux";
 
 function ProductPage() {
     const [isAdded, setIsAdded] = useState(false);
     const { id } = useParams();
     const {user}=useAuth();
-    const ID_CART = "64c77ddd8e88f";
-    const cartProducts = useSelector(state => state.cart);
+    const [updateCart] = useUpdateCartMutation();
     const dispatch = useDispatch();
     const [product, setProduct] = useState(null);
 
@@ -46,29 +45,10 @@ function ProductPage() {
 
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/${ID_CART}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Internship-Auth': `${user}`,
-                },
-                body: JSON.stringify({
-                    products: [
-                        {
-                            id: product.id,
-                            quantity: quantity,
-                        }
-                    ]
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Request failed with status ${response.status}`);
-                    }
-                    return response.json();
-                })
-            dispatch(addToCart(product,quantity));
-            console.log(cartProducts);
+            const response = await updateCart({token:user,product:[{id:Number(product.id),quantity:quantity}]});
+            if(response.data){
+                dispatch(setCart(response.data.data.products));
+            }
 
         } catch (error) {
             console.error('Error adding product to cart:', error);

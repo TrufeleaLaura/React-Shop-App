@@ -4,38 +4,22 @@ import logoPicture from "../images/magazine.png";
 import './componentsCSS.css';
 import {useAuth} from "./AuthComponent";
 import CartBox from "./CartBox";
-
 import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
+import {useGetCartQuery} from "../redux/apiRedux";
 
 export function Navbar() {
     const links = ["What's new", "Login", "Cart", "Log Out", "Account"];
     const {user, logout} = useAuth();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
-
-
+    const { data: cartData, error: cartError } = useGetCartQuery(user);
 
     useEffect(() => {
         if (user) {
-            fetchProducts();
+            dispatch(setCart(cartData?.products || []));
         }
-    }, [user]);
-
-
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch(`https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart/64c77ddd8e88f`, {
-                headers: {
-                    'Internship-Auth': `${user}`
-                }
-            });
-            const data = await response.json();
-            dispatch(setCart(data.products));
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    }, [user, cartData, dispatch]);
 
     return (
         <header className="header">

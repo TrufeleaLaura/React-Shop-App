@@ -1,5 +1,5 @@
 import "./componentsCSS.css"
-import {useSelector} from "react-redux";
+
 export function CategoryFilter({categories,onClickCategory}){
     return (
         <div className="category-filter">
