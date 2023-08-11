@@ -27,8 +27,16 @@ export const apiRedux = createApi({
                 headers: {'Content-Type': 'application/json', 'Internship-Auth': `${token}`},
             }),
             }),
-        })
+
+        removeAllFromCart: builder.mutation({
+            query: ({token,productId}) => ({
+                url: `/${ID_CART}`,
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json', 'Internship-Auth': `${token}`},
+            }),
+        }),
     })
+})
 
 
-export const {useGetCartQuery,useUpdateCartMutation,useRemoveFromCartMutation} = apiRedux
+export const {useGetCartQuery,useUpdateCartMutation,useRemoveFromCartMutation,useRemoveAllFromCartMutation} = apiRedux

@@ -4,13 +4,13 @@ import {useParams} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import { setCart} from "../redux/cartRedux";
+import {setCart} from "../redux/cartRedux";
 import {useUpdateCartMutation} from "../redux/apiRedux";
 
 function ProductPage() {
     const [isAdded, setIsAdded] = useState(false);
-    const { id } = useParams();
-    const {user}=useAuth();
+    const {id} = useParams();
+    const {user} = useAuth();
     const [updateCart] = useUpdateCartMutation();
     const dispatch = useDispatch();
     const [product, setProduct] = useState(null);
@@ -22,7 +22,6 @@ function ProductPage() {
             setIsAdded(false);
         }, 2000);
     };
-
 
 
     async function fetchData() {
@@ -45,8 +44,8 @@ function ProductPage() {
 
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            const response = await updateCart({token:user,product:[{id:Number(product.id),quantity:quantity}]});
-            if(response.data){
+            const response = await updateCart({token: user, product: [{id: Number(product.id), quantity: quantity}]});
+            if (response.data) {
                 dispatch(setCart(response.data.data.products));
             }
 
@@ -60,6 +59,7 @@ function ProductPage() {
         <div className="product-page">
             <div className="product-page__image">
                 <img src={product.thumbnail} alt="Product"/>
+
             </div>
             <div className="product-page__details">
                 <h2 className="product-page__details__title">{product.title}</h2>
@@ -82,7 +82,8 @@ function ProductPage() {
                     <div className="product-page__details__detail">Rating: {product.rating}</div>
                 </div>
                 {user ? (
-                <button className={`product-page__details__add-to-cart-button ${isAdded ? 'added' : ''}`} onClick={handleAddClick}>{isAdded ? 'Added!' : 'Add to Cart'}</button>)
+                        <button className={`product-page__details__add-to-cart-button ${isAdded ? 'added' : ''}`}
+                                onClick={handleAddClick}>{isAdded ? 'Added!' : 'Add to Cart'}</button>)
                     : (<Link to="/login">
                         <button className={`product-page__details__add-to-cart-button`}>Login to Add</button>
                     </Link>)}

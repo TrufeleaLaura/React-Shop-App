@@ -13,7 +13,7 @@ export function Navbar() {
     const {user, logout} = useAuth();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
-    const { data: cartData, error: cartError } = useGetCartQuery(user);
+    const {data: cartData, error: cartError} = useGetCartQuery(user);
 
     useEffect(() => {
         if (user) {
@@ -45,7 +45,7 @@ export function Navbar() {
                                 return null;
                             }
                         } else if (link === 'Cart') {
-                            if(!user) {
+                            if (!user) {
                                 linkPath = '/login';
                             } else {
                                 return (

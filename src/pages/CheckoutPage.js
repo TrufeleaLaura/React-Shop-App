@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../components/AuthComponent";
-import { CheckoutItem } from "../components/CheckoutItem";
+import {useEffect, useState} from "react";
+import {useAuth} from "../components/AuthComponent";
+import {CheckoutItem} from "../components/CheckoutItem";
 import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
-import {useRemoveFromCartMutation, useUpdateCartMutation} from "../redux/apiRedux";
-
+import {useRemoveAllFromCartMutation, useRemoveFromCartMutation, useUpdateCartMutation} from "../redux/apiRedux";
+import {useNavigate} from "react-router-dom";
 
 
 export function CheckoutPage() {
-    const { user } = useAuth();
+    const {user} = useAuth();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
-    const [updateCart]=useUpdateCartMutation();
-    const [removeFromCart]=useRemoveFromCartMutation();
+    const [updateCart] = useUpdateCartMutation();
+    const [removeFromCart] = useRemoveFromCartMutation();
+    const [removeAllFromCart] = useRemoveAllFromCartMutation();
+    const navigate = useNavigate();
+
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
@@ -30,12 +33,13 @@ export function CheckoutPage() {
 
             if (product.quantity + quantity <= 0) {
                 console.log(productId)
-               const response=await removeFromCart({token:user,productId:Number(productId)});
+                const response = await removeFromCart({token: user, productId: Number(productId)});
                 if (response.data) {
                     dispatch(setCart(response.data.data.products));
                 }
             } else {
-                const response = await updateCart({token:user,product:[{id:Number(productId),quantity:quantity}]
+                const response = await updateCart({
+                    token: user, product: [{id: Number(productId), quantity: quantity}]
                 });
                 if (response.data) {
                     dispatch(setCart(response.data.data.products));
@@ -47,6 +51,15 @@ export function CheckoutPage() {
         }
     }
 
+    const handleBuyProducts = async () => {
+        alert('Thank you for your purchase!');
+        const response = await removeAllFromCart({token: user});
+        if (response.data) {
+            dispatch(setCart(response.data.data.products));
+        }
+        navigate('/');
+    }
+
     return (
         <div className="checkout-section">
             <div className="checkout-window">
@@ -55,13 +68,13 @@ export function CheckoutPage() {
                     {cartProducts.map((product) => (
                         <CheckoutItem key={product.id} product={product}
                                       onIncrease={() => handleModifyQuantity(product.id, 1)}
-                                      onDecrease={() => handleModifyQuantity(product.id, -1)} />
+                                      onDecrease={() => handleModifyQuantity(product.id, -1)}/>
                     ))}
                 </div>
             </div>
             <div className="price-checkout">
                 <p className="checkout-window-total">Total: ${totalPrice.toFixed(2)}</p>
-                <button className="checkout-window__button">Buy Now!</button>
+                <button className="checkout-window__button" onClick={handleBuyProducts}>Buy Now!</button>
             </div>
         </div>
     );

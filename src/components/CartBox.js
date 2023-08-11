@@ -1,23 +1,22 @@
 import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import CartItemMainPage from "./CartItemMainPage";
 
 
-
-const CartBox = ({ user,cartProducts }) => {
+const CartBox = ({user, cartProducts}) => {
 
     const [isCartVisible, setCartVisible] = useState(false);
 
     useEffect(() => {
-        if(cartProducts.length===0){
+        if (cartProducts.length === 0) {
             setCartVisible(false);
         }
-    },[cartProducts]);
+    }, [cartProducts]);
     const handleCartToggle = () => {
         setCartVisible(!isCartVisible);
     };
 
-    const cartLinkContent = user  ? (
+    const cartLinkContent = user ? (
         <>
             Cart: ({cartProducts.length})
             {isCartVisible && (
@@ -27,7 +26,7 @@ const CartBox = ({ user,cartProducts }) => {
                     ) : (
                         <ul className="cart-window-list">
                             {cartProducts.map((item) => (
-                                <CartItemMainPage key={item.id} product={item} />
+                                <CartItemMainPage key={item.id} product={item}/>
                             ))}
                         </ul>
                     )}

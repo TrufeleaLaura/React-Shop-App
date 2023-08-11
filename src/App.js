@@ -20,7 +20,7 @@ function App() {
                     <Route path="/shop" element={<MainPage/>}/>
                     <Route path="/product/:id" element={<ProductPage/>}/>
                     <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/cart" element={<CheckoutPage/>}/>
+                    <Route path="/cart" element={<ProtectedRoute><CheckoutPage/></ProtectedRoute>}/>
                     <Route path="/account" element={<AccountPage/>}/>
                 </Routes>
         </AuthProvider>

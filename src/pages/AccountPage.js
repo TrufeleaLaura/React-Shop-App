@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAuth } from '../components/AuthComponent';
+import {useAuth} from '../components/AuthComponent';
 import '../pages/pagesCSS.css';
 
 export function AccountPage() {
-    const { user, logout } = useAuth();
+    const {user, logout} = useAuth();
 
     return (
         <div className="account-container">
