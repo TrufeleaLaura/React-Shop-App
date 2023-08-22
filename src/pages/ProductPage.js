@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
 import {useUpdateCartMutation} from "../redux/apiRedux";
+import axios from "axios";
 
 function ProductPage() {
     const [isAdded, setIsAdded] = useState(false);
@@ -26,8 +27,8 @@ function ProductPage() {
 
     async function fetchData() {
         try {
-            const response = await fetch(`https://dummyjson.com/products/${id}`);
-            const data = await response.json();
+            const response = await axios.get(`http://localhost:8080/api/products/${id}`);
+            const data = response.data;
             setProduct(data);
         } catch (error) {
             console.error('Error fetching product details:', error);

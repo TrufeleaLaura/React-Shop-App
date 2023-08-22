@@ -7,8 +7,10 @@ export const productsApiRedux = createApi({
         getAnotherProducts: builder.query({
             query: ({ productsAlreadyInPage }) => `/products?limit=9&skip=${productsAlreadyInPage}&select=title,price,description,discountPercentage,rating,stock,brand,category,thumbnail,images,discountedPrice`,
         }),
-
+        getProduct: builder.query({
+            query: (id) => `/products/${id}`,
+        }),
     })
 });
 
-export const { useGetAnotherProductsQuery } = productsApiRedux;
+export const { useGetAnotherProductsQuery,useGetProductQuery } = productsApiRedux;

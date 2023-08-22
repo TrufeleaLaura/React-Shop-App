@@ -1,5 +1,6 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import {useNavigate, Navigate} from "react-router-dom";
+import axios from "axios";
 
 const AuthContext = createContext();
 export const AuthProvider = ({children}) => {
@@ -18,8 +19,10 @@ export const AuthProvider = ({children}) => {
         navigate("/shop");
     };
 
-    const logout = () => {
+    const logout = async () => {
         setUser(null);
+        await axios.get('http://localhost:8080/api/user/logout',
+            {headers: {Authorization: `Bearer ${user.token}`}})
         navigate("/", {replace: true});
     };
 

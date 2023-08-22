@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './pagesCSS.css';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
+import axios from "axios";
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -13,18 +14,17 @@ function LoginPage() {
         e.preventDefault();
         document.getElementById("invalid").style.display = "none";
         try {
-            const response = await fetch('http://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({email, password})
+            const response = await axios.post('http://localhost:8080/api/user/login', {
+                email: email,
+                password: password
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                const {token} = data;
-                login(token);
+            if (response.status === 200) {
+                const data = response.data;
+                console.log(data);
+                const { user } = data;
+                login(user);
+                //const token = user.token;
+                //login(token);
                 navigate('/shop');
             } else {
                 document.getElementById("invalid").style.display = "block";
