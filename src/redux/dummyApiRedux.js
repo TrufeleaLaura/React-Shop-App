@@ -16,5 +16,4 @@ export const productsApiRedux = createApi({
     })
 });
 
-
 export const { useGetAnotherProductsQuery,useGetProductQuery } = productsApiRedux;

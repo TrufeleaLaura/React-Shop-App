@@ -10,6 +10,7 @@ import {setProducts} from "../redux/productsRedux";
 import {setCart} from "../redux/cartRedux";
 import {useGetAnotherProductsQuery} from "../redux/dummyApiRedux";
 import CategoryBox from "../components/CategoryBox";
+import axios from "axios";
 
 const {useUpdateCartMutation} = require("../redux/apiRedux");
 
@@ -18,22 +19,31 @@ export function MainPage() {
     const {user} = useAuth();
     const [productsInPage, setProductsInPage] = useState(0);
     const products = useSelector(state => state.products);
-    const [categories, setCategories] = useState(["All Products"]);
     const dispatch = useDispatch();
     const [updateCart] = useUpdateCartMutation();
-    const [selectedCategory, setSelectedCategory] = useState("All Products");
     const [filteredProducts, setFilteredProducts] = useState(products);
     const {data: dataProducts, error} = useGetAnotherProductsQuery({productsInPage: productsInPage});
     const [flag, setFlag] = useState(false);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [categories, setCategories] = useState([]);
 
 
+    useEffect( () => {
+        console.log(productsInPage);
+         axios.get('http://localhost:8080/api/products/categories')
+            .then(response => {
+                setCategories(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+    }, []);
 
 
     useEffect(() => {
-        console.log(flag);
         if (flag === false) {
             if (dataProducts) {
-                console.log(dataProducts);
                 dispatch(setProducts(dataProducts));
                 setProductsInPage(productsInPage + 9);
                 setFlag(true);
@@ -45,30 +55,76 @@ export function MainPage() {
     useEffect(() => {
         if (products.length > 0) {
             setFilteredProducts(products);
-            const updatedCategories = [
-                "All Products",
-                ...new Set(products.map((product) => product.category)),
-            ];
-            setCategories(updatedCategories);
         }
     }, [products]);
 
-    const handleCategoryChange = (category) => {
-        setSelectedCategory(category);
-
-        if (category === "All Products") {
-            setFilteredProducts(products);
+    const handleCategoryChange = async (category) => {
+        let updatedSelectedCategories = [...selectedCategories];
+        const index = updatedSelectedCategories.indexOf(category);
+        if (index === -1) {
+            updatedSelectedCategories.push(category);
         } else {
-            const updatedFilteredProducts = products.filter(product => product.category === category);
-            setFilteredProducts(updatedFilteredProducts);
+            updatedSelectedCategories.splice(index, 1);
+        }
+        setSelectedCategories(updatedSelectedCategories);
+        handleFilterProducts(updatedSelectedCategories);
+    };
+
+    useEffect(() => {
+        handleFilterProducts(selectedCategories);
+    }, [selectedCategories]);
+
+    useEffect(() => {
+        console.log("aici");
+        console.log(filteredProducts);
+        setFilteredProducts(filteredProducts);
+    },[filteredProducts,productsInPage]);
+
+    const handleFilterProducts = async (selectedCategories) => {
+        try {
+            let response;
+            console.log(productsInPage+"filter");
+            if (selectedCategories.length === 0) {
+                response = await axios.post('http://localhost:8080/api/products/',
+                    {limit: productsInPage,skip:0});
+            } else {
+                response = await axios.post(`http://localhost:8080/api/products/filter`,
+                    {categories: selectedCategories,skip:0,limit:productsInPage});
+            }
+            setFilteredProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching filtered products:', error);
+        }
+    };
+    const handleFilterProductsScroll = async (selectedCategories) => {
+        try {
+            let response;
+            console.log(productsInPage+"filterScroll")
+            if (selectedCategories.length === 0) {
+                response = await axios.post('http://localhost:8080/api/products/',
+                    {limit: 9,skip:productsInPage});
+            } else {
+                response = await axios.post(`http://localhost:8080/api/products/filter`,
+                    {categories: selectedCategories,skip:productsInPage,limit:9});
+            }
+            setFilteredProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching filtered products:', error);
         }
     };
 
+
+
     const handleScroll = _debounce(() => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight && selectedCategory === "All Products") {
-            if (dataProducts) {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight ) {
+            if (dataProducts && categories.length === 0) {
+                console.log(productsInPage+"scrollAll")
                 setProductsInPage(productsInPage + 9);
                 dispatch(setProducts(dataProducts));
+            }
+            else{
+                setProductsInPage(productsInPage + 9);
+                handleFilterProductsScroll(selectedCategories);
             }
         }
     }, 300);
@@ -78,7 +134,7 @@ export function MainPage() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [handleScroll, productsInPage, selectedCategory]);
+    }, [handleScroll]);
 
 
     const handleSearch = (searchValue) => {
@@ -103,29 +159,26 @@ export function MainPage() {
         }
     };
 
-    useEffect(() => {
-        const categories = ["All Products", ...new Set(products.map((product) => product.category))];
-        setCategories(categories);
-    }, [products]);
 
     return (
         <div className="main-page">
             <div className="category-box">
                 {categories.map((category, index) => (
-                    <div className="checkbox-container">
-                    <label key={index}>
-                        <input
-                            type="checkbox"
-                            checked={selectedCategory.includes(category)}
-                            onChange={() => handleCategoryChange(category)}
-                        />
-                        {category}
-                    </label>
+                    <div className="checkbox-container" key={index}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={selectedCategories.includes(category)}
+                                onChange={() => handleCategoryChange(category)}
+                            />
+                            {category}
+                        </label>
                     </div>
                 ))}
             </div>
 
-                {/*<SearchBar onChangeSearch={(value) => handleSearch(value)} />*/}
+
+            {/*<SearchBar onChangeSearch={(value) => handleSearch(value)} />*/}
                 <ProductCard products={filteredProducts} handleAddToCart={handleAddToCart} />
 
         </div>
