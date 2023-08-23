@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setProducts} from "../redux/productsRedux";
 import {setCart} from "../redux/cartRedux";
 import {useGetAnotherProductsQuery} from "../redux/dummyApiRedux";
+import CategoryBox from "../components/CategoryBox";
 
 const {useUpdateCartMutation} = require("../redux/apiRedux");
 
@@ -22,15 +23,18 @@ export function MainPage() {
     const [updateCart] = useUpdateCartMutation();
     const [selectedCategory, setSelectedCategory] = useState("All Products");
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const {data: dataProducts, error} = useGetAnotherProductsQuery({productsAlreadyInPage: productsInPage});
+    const {data: dataProducts, error} = useGetAnotherProductsQuery({productsInPage: productsInPage});
     const [flag, setFlag] = useState(false);
+
+
 
 
     useEffect(() => {
         console.log(flag);
         if (flag === false) {
             if (dataProducts) {
-                dispatch(setProducts(dataProducts.products));
+                console.log(dataProducts);
+                dispatch(setProducts(dataProducts));
                 setProductsInPage(productsInPage + 9);
                 setFlag(true);
             }
@@ -63,9 +67,8 @@ export function MainPage() {
     const handleScroll = _debounce(() => {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight && selectedCategory === "All Products") {
             if (dataProducts) {
-                console.log(dataProducts.products)
                 setProductsInPage(productsInPage + 9);
-                dispatch(setProducts(dataProducts.products));
+                dispatch(setProducts(dataProducts));
             }
         }
     }, 300);
@@ -89,11 +92,12 @@ export function MainPage() {
     };
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            const response = await updateCart({token: user, product: [{id: Number(product.id), quantity: quantity}]});
+            const response = await updateCart({
+                user: user,  product: { productId: Number(product.id), quantity: quantity }
+            });
             if (response.data) {
-                dispatch(setCart(response.data.data.products));
+                dispatch(setCart(response.data.products));
             }
-
         } catch (error) {
             console.error('Error adding product to cart:', error);
         }
@@ -105,10 +109,25 @@ export function MainPage() {
     }, [products]);
 
     return (
-        <>
-            <CategoryFilter categories={categories} onClickCategory={handleCategoryChange}/>
-            <SearchBar onChangeSearch={(value) => handleSearch(value)}/>
-            <ProductCard products={filteredProducts} handleAddToCart={handleAddToCart}/>
-        </>
+        <div className="main-page">
+            <div className="category-box">
+                {categories.map((category, index) => (
+                    <div className="checkbox-container">
+                    <label key={index}>
+                        <input
+                            type="checkbox"
+                            checked={selectedCategory.includes(category)}
+                            onChange={() => handleCategoryChange(category)}
+                        />
+                        {category}
+                    </label>
+                    </div>
+                ))}
+            </div>
+
+                {/*<SearchBar onChangeSearch={(value) => handleSearch(value)} />*/}
+                <ProductCard products={filteredProducts} handleAddToCart={handleAddToCart} />
+
+        </div>
     );
 }

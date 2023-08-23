@@ -2,6 +2,7 @@ import {Link} from "react-router-dom";
 import React, {useState} from "react";
 import {useAuth} from "./AuthComponent";
 import {useSelector} from "react-redux";
+import CategoryBox from "./CategoryBox";
 
 
 export function ProductCard({products, handleAddToCart}) {
@@ -48,7 +49,7 @@ export function ProductCard({products, handleAddToCart}) {
                             <div className="product-grid__product-card__product-details" style={{color: "black"}}>
                                 <div className="brand">Brand: {product.brand}</div>
                                 <div className="category">Category: {product.category}</div>
-                                <div className="stock">Stock: {product.stock}</div>
+                                {/*<div className="stock">Stock: {product.stock}</div>*/}
                                 <div className="rating">Rating:{product.rating}</div>
                             </div>
                         </Link>

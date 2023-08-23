@@ -15,7 +15,6 @@ export function CheckoutPage() {
     const [removeFromCart] = useRemoveFromCartMutation();
     const [removeAllFromCart] = useRemoveAllFromCartMutation();
     const navigate = useNavigate();
-
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
@@ -29,20 +28,20 @@ export function CheckoutPage() {
 
     const handleModifyQuantity = async (productId, quantity) => {
         try {
-            const product = cartProducts.find((product) => product.id === Number(productId));
+            const product = cartProducts.find((product) => product.productId === Number(productId));
 
             if (product.quantity + quantity <= 0) {
                 console.log(productId)
-                const response = await removeFromCart({token: user, productId: Number(productId)});
+                const response = await removeFromCart({user: user, productId: Number(productId)});
                 if (response.data) {
-                    dispatch(setCart(response.data.data.products));
+                    dispatch(setCart(response.data.products));
                 }
             } else {
                 const response = await updateCart({
-                    token: user, product: [{id: Number(productId), quantity: quantity}]
+                    user: user,  product: { productId: Number(productId), quantity: quantity }
                 });
                 if (response.data) {
-                    dispatch(setCart(response.data.data.products));
+                    dispatch(setCart(response.data.products));
                 }
 
             }
@@ -67,8 +66,8 @@ export function CheckoutPage() {
                 <div className="checkout-window__grid">
                     {cartProducts.map((product) => (
                         <CheckoutItem key={product.id} product={product}
-                                      onIncrease={() => handleModifyQuantity(product.id, 1)}
-                                      onDecrease={() => handleModifyQuantity(product.id, -1)}/>
+                                      onIncrease={() => handleModifyQuantity(product.productId, 1)}
+                                      onDecrease={() => handleModifyQuantity(product.productId, -1)}/>
                     ))}
                 </div>
             </div>

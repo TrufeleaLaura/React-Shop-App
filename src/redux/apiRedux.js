@@ -1,30 +1,32 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {useAuth} from "../components/AuthComponent";
 const ID_CART = "64c77ddd8e88f";
+
 
 export const apiRedux = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/internship-api/v1/cart'}),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/api/cart/'}),
     endpoints: builder => ({
         getCart: builder.query({
-            query: (token) => ({
-                url: `/${ID_CART}`,
+            query: (user) => ({
+                url: `/${user._id}`,
                 method: 'GET',
-                headers: {'Content-Type': 'application/json', 'Internship-Auth': `${token}`}
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}`}
             })
         }),
         updateCart: builder.mutation({
-            query: ({token,product}) => ({
-                url: `/${ID_CART}`,
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Internship-Auth': `${token}`},
-                body: JSON.stringify({products:product})
+            query: ({user,product}) => ({
+                url: `/${user._id}`,
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}`},
+                body: JSON.stringify(product)
             }),
             }),
         removeFromCart: builder.mutation({
-            query: ({token,productId}) => ({
-                url: `/${ID_CART}?products[]=${productId}`,
+            query: ({user,productId}) => ({
+                url: `/${user._id}/${productId}`,
                 method: 'DELETE',
-                headers: {'Content-Type': 'application/json', 'Internship-Auth': `${token}`},
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}`},
             }),
             }),
 
