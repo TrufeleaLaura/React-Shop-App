@@ -44,8 +44,8 @@ export function ProductCard({products, handleAddToCart}) {
                                 <p className="product-grid__product-card__price__initial"> ${product.price}</p>
                                 <p className="product-grid__product-card__price__final">${(product.price - (product.price * product.discountPercentage / 100).toFixed(2))}</p>
                             </div>
-                            <p className="product-grid__product-card__description"
-                               style={{color: "black"}}>{product.description}</p>
+                            {/*<p className="product-grid__product-card__description"*/}
+                            {/*   style={{color: "black"}}>{product.description}</p>*/}
                             <div className="product-grid__product-card__product-details" style={{color: "black"}}>
                                 <div className="brand">Brand: {product.brand}</div>
                                 <div className="category">Category: {product.category}</div>

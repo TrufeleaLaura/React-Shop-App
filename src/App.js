@@ -10,6 +10,7 @@ import {useEffect} from "react";
 import {CheckoutPage} from "./pages/CheckoutPage";
 
 import {AccountPage} from "./pages/AccountPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/login" element={<LoginPage/>}/>
                     <Route path="/cart" element={<ProtectedRoute><CheckoutPage/></ProtectedRoute>}/>
                     <Route path="/account" element={<AccountPage/>}/>
+                    <Route path="/register" element={<RegisterPage/>}/>
                 </Routes>
         </AuthProvider>
     );

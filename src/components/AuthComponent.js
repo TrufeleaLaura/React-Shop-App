@@ -20,9 +20,9 @@ export const AuthProvider = ({children}) => {
     };
 
     const logout = async () => {
-        setUser(null);
         await axios.get('http://localhost:8080/api/user/logout',
             {headers: {Authorization: `Bearer ${user.token}`}})
+        setUser(null);
         navigate("/", {replace: true});
     };
 

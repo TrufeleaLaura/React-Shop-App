@@ -196,8 +196,13 @@ input {
 }
 
 .account-container {
-    max-width: 800px;
-    margin: 12rem auto;
+    height:35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 10rem auto;
     padding: 2rem;
     font-family: Arial, sans-serif;
     border: 20px solid midnightblue;
@@ -233,7 +238,7 @@ input {
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 0.5rem 1rem;
+    padding: 1.2rem 3rem;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -269,4 +274,76 @@ input {
     display: flex;
     max-width: 1200px;
     padding: 2rem;
+}
+.register-container {
+    border: 20px solid midnightblue;
+    max-width: 600px;
+    margin-top: 10rem;
+    margin-left: 700px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.register-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+
+.register-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container input[type="phoneNumber"],
+.register-container input[type="address"]
+.register-container input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.register-container .radio-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.register-container .radio-group label {
+    font-size: 14px;
+    color: #444;
+}
+
+.register-container button.register-button {
+    background-color: midnightblue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.register-container button.register-button:hover {
+    background-color: black;
+}
+
+.register-container .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
 }
