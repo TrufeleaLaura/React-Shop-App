@@ -1,12 +1,19 @@
 import './componentsCSS.css'
 
-export function SearchBar({onChangeSearch}) {
+export function SearchBar({ onSearch }) {
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            const searchValue = event.target.value.toLowerCase();
+            onSearch(searchValue);
+        }
+    };
+
     return (
         <div className="search-bar">
             <input
                 type="text"
-                placeholder="Search products in page..."
-                onChange={onChangeSearch}
+                placeholder="Press enter to search or refresh the products..."
+                onKeyDown={handleKeyPress}
                 className="search-input"
             />
         </div>

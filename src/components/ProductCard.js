@@ -21,7 +21,7 @@ export function ProductCard({products, handleAddToCart}) {
         }, 2000);
     };
     return (
-        <div className="main">
+        <div className="main-product-grid">
             <div className="product-grid">
                 {products.map((product, index) => (
                     <div className="product-grid__product-card" key={index}>

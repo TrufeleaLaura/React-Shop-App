@@ -45,11 +45,13 @@ function ProductPage() {
 
     const handleAddToCart = async (product, quantity = 1) => {
         try {
-            const response = await updateCart({token: user, product: [{id: Number(product.id), quantity: quantity}]});
+            const response = await updateCart({
+                user: user,
+                product: { productId: Number(product.id), quantity: quantity },
+            });
             if (response.data) {
-                dispatch(setCart(response.data.data.products));
+                dispatch(setCart(response.data.products));
             }
-
         } catch (error) {
             console.error('Error adding product to cart:', error);
         }

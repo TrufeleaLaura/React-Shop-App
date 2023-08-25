@@ -272,8 +272,9 @@ input {
 .main-page {
     margin-top: 5rem;
     display: flex;
-    max-width: 1200px;
+    max-width: 50rem;
     padding: 2rem;
+
 }
 .register-container {
     border: 20px solid midnightblue;

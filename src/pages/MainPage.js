@@ -23,6 +23,9 @@ export function MainPage() {
     const [products, setProducts] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [searchTerm, setSearchTerm] = useState([]);
+    const [doRequestScroll, setDoRequestScroll] = useState(true);
+    const [enterPressed, setEnterPressed] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/products/categories')
@@ -32,7 +35,7 @@ export function MainPage() {
             .catch(error => {
                 console.log(error);
             });
-        axios.post('http://localhost:8080/api/products/', { limit: 9, skip: 0 })
+        axios.post('http://localhost:8080/api/products/', {limit: 9, skip: 0})
             .then(response => {
                 setProducts(response.data);
                 setProductsInPage(9);
@@ -52,6 +55,7 @@ export function MainPage() {
             updatedSelectedCategories.splice(index, 1);
         }
         setSelectedCategories(updatedSelectedCategories);
+        setDoRequestScroll(true);
         handleFilterProducts(updatedSelectedCategories);
     };
 
@@ -84,12 +88,24 @@ export function MainPage() {
                     limit: 9,
                     skip: productsInPage,
                 });
+                if (response.data.length > 0) {
+                    setDoRequestScroll(true)
+                    setProductsInPage(productsInPage + 9);
+                } else {
+                    setDoRequestScroll(false);
+                }
             } else {
                 response = await axios.post('http://localhost:8080/api/products/filter', {
                     categories: selectedCategories,
                     limit: 9,
                     skip: productsInPage,
                 });
+                if (response.data.length > 0) {
+                    setDoRequestScroll(true)
+                    setProductsInPage(productsInPage + 9);
+                } else {
+                    setDoRequestScroll(false);
+                }
             }
             setProducts(existingProducts => [...existingProducts, ...response.data]);
         } catch (error) {
@@ -98,12 +114,11 @@ export function MainPage() {
     };
 
     const handleScroll = _debounce(() => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-            if(productsInPage+9<=products.length) {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight && doRequestScroll) {
                 console.log(productsInPage, products.length);
-                setProductsInPage(productsInPage + 9);
+                handleFilterProductsScroll(selectedCategories);
             }
-            handleFilterProductsScroll(selectedCategories);}}
+        }
         , 300);
 
     useEffect(() => {
@@ -117,7 +132,7 @@ export function MainPage() {
         try {
             const response = await updateCart({
                 user: user,
-                product: { productId: Number(product.id), quantity: quantity },
+                product: {productId: Number(product.id), quantity: quantity},
             });
             if (response.data) {
                 dispatch(setCart(response.data.products));
@@ -127,12 +142,40 @@ export function MainPage() {
         }
     };
 
+    useEffect(() => {
+            performSearch(searchTerm)
+    }, [searchTerm]);
+
+    const performSearch = async (searchValue) => {
+        if (searchTerm === '') {
+            axios.post('http://localhost:8080/api/products/', {limit: 9, skip: 0})
+                .then(response => {
+                    setProducts(response.data);
+                    setProductsInPage(9);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/products/search/${searchValue}`);
+                setProducts(response.data);
+            } catch (error) {
+                console.error('Error performing search:', error);
+            }
+        }
+    }
+
 
     return (
-        <div className="main-page">
-            <CategoryBox categories={categories} selectedCategories={selectedCategories} handleCategoryChange={handleCategoryChange} />
-            <ProductCard products={products} handleAddToCart={handleAddToCart} />
-        </div>
+        <>
+            <div className="main-page">
+                <SearchBar onSearch={setSearchTerm}/>
+                <CategoryBox categories={categories} selectedCategories={selectedCategories}
+                             onChangeCategory={handleCategoryChange}/>
+                <ProductCard products={products} handleAddToCart={handleAddToCart}/>
+            </div>
+        </>
     );
 }
 

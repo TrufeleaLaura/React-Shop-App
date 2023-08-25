@@ -31,14 +31,13 @@ function RegisterPage() {
             .then(response => {
                 if (response.status === 200) {
                     navigate('/login');
-                } else {
-
-                    console.log('Registration failed:', response.data);
                 }
             })
             .catch(error => {
                 console.error('Error during registration:', error);
                 document.getElementById('invalid').style.display = 'block';
+                console.log(error.response.data);
+                document.getElementById('invalid').innerHTML = 'Registration failed!'+error.response.data+'!';
                 setFirstName('');
                 setLastName('');
                 setEmail('');
