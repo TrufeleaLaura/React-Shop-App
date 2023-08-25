@@ -1,6 +1,6 @@
 import './componentsCSS.css'
 
-export function SearchBar({ onSearch }) {
+export function SearchBar({onSearch}) {
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             const searchValue = event.target.value.toLowerCase();

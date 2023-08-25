@@ -5,9 +5,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
 import {useRemoveAllFromCartMutation, useRemoveFromCartMutation, useUpdateCartMutation} from "../redux/apiRedux";
 import {useNavigate} from "react-router-dom";
-import {Form, Input, Radio} from "antd";
+import {Form, Input, Modal, Radio} from "antd";
 import axios from "axios";
 import {setProducts} from "../redux/productsRedux";
+import OrderProducts from "../components/OrderProducts";
 
 
 export function CheckoutPage() {
@@ -31,6 +32,8 @@ export function CheckoutPage() {
             }, 0)
         );
     }, [cartProducts]);
+
+
     const handleFullNameChange = (event) => {
         setFullName(event.target.value);
     };
@@ -72,33 +75,38 @@ export function CheckoutPage() {
     }
 
     const handleBuyProducts = async (values) => {
-    try {
-        const response = await axios.post(
-            `http://localhost:8080/api/order/${user._id}`,
-            {
-                fullName,
-                phoneNumber,
-                address: deliveryAddress,
-                paymentMethod,
-                products: cartProducts,
-                total: totalPrice,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
+        try {
+            const response = await axios.post(
+                `http://localhost:8080/api/order/${user._id}`,
+                {
+                    fullName,
+                    phoneNumber,
+                    address: deliveryAddress,
+                    paymentMethod,
+                    products: cartProducts,
+                    total: totalPrice,
                 },
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }
+            );
+            if (response.data) {
+                alert('Thank you for your order!')
+                navigate('/');
+                dispatch(setCart(response.data.products));
             }
-        );
-        if (response.data) {
-            alert('Thank you for your order!')
-            navigate('/');
-            dispatch(setCart(response.data.products));
+
+        } catch (error) {
+            if (error.response.message === "Invalid token" || error.response.message === "Unauthorized access") {
+                alert("You are not logged in!")
+                navigate('/login');
+            }
+            document.getElementById('invalid-details').style.display = 'block';
+
+
         }
-
-    } catch (error) {
-        document.getElementById('invalid-details').style.display = 'block';
-
-    }
     }
 
     return (
@@ -119,7 +127,7 @@ export function CheckoutPage() {
             </div>
             {cartProducts.length !== 0 && (
                 <div className="delivery-info">
-                    <Form >
+                    <Form>
                         <Form.Item
                             label="Full Name"
                             name="fullName"
@@ -168,9 +176,10 @@ export function CheckoutPage() {
                                 Order Now!
                             </button>
                         </div>
-                        <p  id={"invalid-details"} style={{display: "none", color: "red"}}>Complete all fields! </p>
+                        <p id={"invalid-details"} style={{display: "none", color: "red"}}>Complete all fields! </p>
                     </Form>
                 </div>
+
             )}
         </div>
     );

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './pagesCSS.css';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 function RegisterPage() {
@@ -37,7 +37,7 @@ function RegisterPage() {
                 console.error('Error during registration:', error);
                 document.getElementById('invalid').style.display = 'block';
                 console.log(error.response.data);
-                document.getElementById('invalid').innerHTML = 'Registration failed!'+error.response.data+'!';
+                document.getElementById('invalid').innerHTML = 'Registration failed!' + error.response.data + '!';
                 setFirstName('');
                 setLastName('');
                 setEmail('');
@@ -55,7 +55,7 @@ function RegisterPage() {
             <p
                 className="invalid-account"
                 id="invalid"
-                style={{ display: 'none', color: 'red' }}
+                style={{display: 'none', color: 'red'}}
             >
                 Registration failed! Please check your inputs.
             </p>

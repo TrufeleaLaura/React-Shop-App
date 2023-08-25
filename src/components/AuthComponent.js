@@ -20,10 +20,17 @@ export const AuthProvider = ({children}) => {
     };
 
     const logout = async () => {
-        await axios.get('http://localhost:8080/api/user/logout',
-            {headers: {Authorization: `Bearer ${user.token}`}})
-        setUser(null);
-        navigate("/", {replace: true});
+        try {
+            await axios.get('http://localhost:8080/api/user/logout',
+                {headers: {Authorization: `Bearer ${user.token}`}})
+            setUser(null);
+            navigate("/", {replace: true});
+        } catch (error) {
+            if (error.response.message === "Invalid token" || error.response.message === "Unauthorized access") {
+                alert("You are not logged in!")
+                navigate('/login');
+            }
+        }
     };
 
     const value = useMemo(

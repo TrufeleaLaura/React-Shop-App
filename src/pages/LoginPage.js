@@ -21,7 +21,7 @@ function LoginPage() {
             if (response.status === 200) {
                 const data = response.data;
                 console.log(data);
-                const { user } = data;
+                const {user} = data;
                 login(user);
                 //const token = user.token;
                 //login(token);

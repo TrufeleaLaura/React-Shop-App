@@ -1,8 +1,7 @@
 import {Link} from "react-router-dom";
 import React, {useState} from "react";
 import {useAuth} from "./AuthComponent";
-import {useSelector} from "react-redux";
-import CategoryBox from "./CategoryBox";
+
 
 
 export function ProductCard({products, handleAddToCart}) {
@@ -29,10 +28,6 @@ export function ProductCard({products, handleAddToCart}) {
                             <div className="product-grid__product-card__image-wrapper__gallery">
                                 <img src={product.thumbnail} alt="Product Image"
                                      className="product-grid__product-card__image-wrapper__image"/>
-                                {/*<div className="product-grid__product-card__image-wrapper__arrows">*/}
-                                {/*    <span className="arrow left" >&#8249;</span>*/}
-                                {/*    <span className="arrow right" >&#8250;</span>*/}
-                                {/*</div>*/}
                                 <div
                                     className="product-grid__product-card__image-wrapper__discount">-{product.discountPercentage}%
                                 </div>
@@ -44,8 +39,6 @@ export function ProductCard({products, handleAddToCart}) {
                                 <p className="product-grid__product-card__price__initial"> ${product.price}</p>
                                 <p className="product-grid__product-card__price__final">${(product.price - (product.price * product.discountPercentage / 100).toFixed(2))}</p>
                             </div>
-                            {/*<p className="product-grid__product-card__description"*/}
-                            {/*   style={{color: "black"}}>{product.description}</p>*/}
                             <div className="product-grid__product-card__product-details" style={{color: "black"}}>
                                 <div className="brand">Brand: {product.brand}</div>
                                 <div className="category">Category: {product.category}</div>

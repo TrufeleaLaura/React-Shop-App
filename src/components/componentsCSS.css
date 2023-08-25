@@ -321,13 +321,14 @@
     z-index:10;
     position: fixed;
     top:85px;
-    background-color: black;
-    color:white;
+    background-color: white;
+    color:midnightblue;
     width:28rem;
     right:8px;
     cursor:pointer;
     margin-right:20px;
     overflow-y: auto;
+    border: 1px solid midnightblue;
 
 }
 

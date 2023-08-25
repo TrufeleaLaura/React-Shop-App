@@ -1,7 +1,7 @@
 import React from 'react';
 import './componentsCSS.css';
 
-const CategoryBox = ({ categories, selectedCategories, onChangeCategory }) => {
+const CategoryBox = ({categories, selectedCategories, onChangeCategory}) => {
     return (
         <div className="category-box">
             {categories.map((category, index) => (

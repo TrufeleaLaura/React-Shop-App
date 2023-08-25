@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './pagesCSS.css';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../components/AuthComponent";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -15,6 +15,7 @@ function ProductPage() {
     const [updateCart] = useUpdateCartMutation();
     const dispatch = useDispatch();
     const [product, setProduct] = useState(null);
+    const navigate = useNavigate();
 
     const handleAddClick = () => {
         handleAddToCart(product, 1);
@@ -47,12 +48,16 @@ function ProductPage() {
         try {
             const response = await updateCart({
                 user: user,
-                product: { productId: Number(product.id), quantity: quantity },
+                product: {productId: Number(product.id), quantity: quantity},
             });
             if (response.data) {
                 dispatch(setCart(response.data.products));
             }
         } catch (error) {
+            if (error.response.message === "Invalid token" || error.response.message === "Unauthorized access") {
+                alert("You are not logged in!")
+                navigate('/login');
+            }
             console.error('Error adding product to cart:', error);
         }
     };

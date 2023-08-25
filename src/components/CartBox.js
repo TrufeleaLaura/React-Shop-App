@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {Link} from "react-router-dom";
 import CartItemMainPage from "./CartItemMainPage";
 
-const CartBox = ({ user, cartProducts }) => {
+const CartBox = ({user, cartProducts}) => {
     const [isCartVisible, setCartVisible] = useState(false);
     const [cartLeaveTimeout, setCartLeaveTimeout] = useState(null);
 
@@ -43,7 +43,7 @@ const CartBox = ({ user, cartProducts }) => {
                     ) : (
                         <ul className="cart-window-list">
                             {cartProducts.map((item) => (
-                                <CartItemMainPage key={item.id} product={item} />
+                                <CartItemMainPage key={item.id} product={item}/>
                             ))}
                         </ul>
                     )}

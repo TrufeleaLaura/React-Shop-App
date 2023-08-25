@@ -8,7 +8,7 @@ export function AccountPage() {
     return (
         <div className="account-container">
             <div className="account-header">
-                <h1>Welcome, {user ? user.firstName+" "+user.lastName : 'Guest'}!</h1>
+                <h1>Welcome, {user ? user.firstName + " " + user.lastName : 'Guest'}!</h1>
             </div>
             <div className="account-details">
                 <div className="account-info">
@@ -36,11 +36,11 @@ export function AccountPage() {
                 </div>
             </div>
 
-                {!user &&
-                    <div className="account-content">
+            {!user &&
+                <div className="account-content">
                     <p>Please log in to view your order history.</p>
-                    </div>
-                }
+                </div>
+            }
 
             <div className="account-footer">
                 <p>Contact us: meta-shop@example.com</p>
