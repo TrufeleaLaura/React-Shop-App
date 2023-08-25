@@ -10,7 +10,6 @@ export default function OrderPage() {
     const {user} = useAuth();
     const [orderProducts, setOrderProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState('');
     const navigate = useNavigate();
     const columnsProducts = [
         {
@@ -88,18 +87,12 @@ export default function OrderPage() {
             ),
         },
     ]
+
     const handleShowModal = async (record) => {
-        setSelectedOrder(record._id);
-        console.log(selectedOrder)
-        console.log(selectedOrder)
-        const response = await axios.get(`http://localhost:8080/api/order/${selectedOrder}`);
+        const response = await axios.get(`http://localhost:8080/api/order/${record._id}`);
         if (response.data) {
-            console.log(response.data)
-            const products = [...response.data.products];
-            console.log("aici" + products)
             setOrderProducts(response.data.products);
             setIsModalOpen(true);
-            console.log(response.data)
         }
 
     }

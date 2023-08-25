@@ -103,9 +103,6 @@ export function CheckoutPage() {
                 alert("You are not logged in!")
                 navigate('/login');
             }
-            document.getElementById('invalid-details').style.display = 'block';
-
-
         }
     }
 
@@ -176,7 +173,6 @@ export function CheckoutPage() {
                                 Order Now!
                             </button>
                         </div>
-                        <p id={"invalid-details"} style={{display: "none", color: "red"}}>Complete all fields! </p>
                     </Form>
                 </div>
 
