@@ -15,6 +15,7 @@ export function CheckoutItem({product, onIncrease, onDecrease}) {
             </div>
             <p className="box-item__total-price">${(product.quantity * price).toFixed(2)}</p>
         </div>
+
     );
 
 }

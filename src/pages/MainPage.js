@@ -8,7 +8,7 @@ import {useAuth} from "../components/AuthComponent";
 import {useDispatch, useSelector} from "react-redux";
 import {setProducts} from "../redux/productsRedux";
 import {setCart} from "../redux/cartRedux";
-import {useGetAnotherProductsQuery} from "../redux/dummyApiRedux";
+import {useGetAnotherProductsQuery} from "../redux/productsApiRedux";
 import CategoryBox from "../components/CategoryBox";
 import axios from "axios";
 
@@ -143,7 +143,7 @@ export function MainPage() {
     };
 
     useEffect(() => {
-            performSearch(searchTerm)
+        performSearch(searchTerm)
     }, [searchTerm]);
 
     const performSearch = async (searchValue) => {

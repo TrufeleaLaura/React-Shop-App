@@ -485,7 +485,7 @@
 .checkout-window__button {
     background-color: midnightblue;
     color: #fff;
-    margin-right:12rem;
+    margin: 0 auto;
     font-size: 2rem;
     padding: 10px 20px;
     border: none;

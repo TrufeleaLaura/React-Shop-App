@@ -1,19 +1,25 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useAuth} from "../components/AuthComponent";
 import {CheckoutItem} from "../components/CheckoutItem";
 import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
 import {useRemoveAllFromCartMutation, useRemoveFromCartMutation, useUpdateCartMutation} from "../redux/apiRedux";
 import {useNavigate} from "react-router-dom";
+import {Form, Input, Radio} from "antd";
+import axios from "axios";
+import {setProducts} from "../redux/productsRedux";
 
 
 export function CheckoutPage() {
     const {user} = useAuth();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
+    const [fullName, setFullName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [deliveryAddress, setDeliveryAddress] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('');
     const [updateCart] = useUpdateCartMutation();
     const [removeFromCart] = useRemoveFromCartMutation();
-    const [removeAllFromCart] = useRemoveAllFromCartMutation();
     const navigate = useNavigate();
     const [totalPrice, setTotalPrice] = useState(0);
 
@@ -25,6 +31,21 @@ export function CheckoutPage() {
             }, 0)
         );
     }, [cartProducts]);
+    const handleFullNameChange = (event) => {
+        setFullName(event.target.value);
+    };
+
+    const handlePhoneNumberChange = (event) => {
+        setPhoneNumber(event.target.value);
+    };
+
+    const handleDeliveryAddressChange = (event) => {
+        setDeliveryAddress(event.target.value);
+    };
+
+    const handlePaymentMethodChange = (event) => {
+        setPaymentMethod(event.target.value);
+    };
 
     const handleModifyQuantity = async (productId, quantity) => {
         try {
@@ -38,7 +59,7 @@ export function CheckoutPage() {
                 }
             } else {
                 const response = await updateCart({
-                    user: user,  product: { productId: Number(productId), quantity: quantity }
+                    user: user, product: {productId: Number(productId), quantity: quantity}
                 });
                 if (response.data) {
                     dispatch(setCart(response.data.products));
@@ -50,13 +71,34 @@ export function CheckoutPage() {
         }
     }
 
-    const handleBuyProducts = async () => {
-        alert('Thank you for your purchase!');
-        const response = await removeAllFromCart({token: user});
+    const handleBuyProducts = async (values) => {
+    try {
+        const response = await axios.post(
+            `http://localhost:8080/api/order/${user._id}`,
+            {
+                fullName,
+                phoneNumber,
+                address: deliveryAddress,
+                paymentMethod,
+                products: cartProducts,
+                total: totalPrice,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            }
+        );
         if (response.data) {
-            dispatch(setCart(response.data.data.products));
+            alert('Thank you for your order!')
+            navigate('/');
+            dispatch(setCart(response.data.products));
         }
-        navigate('/');
+
+    } catch (error) {
+        document.getElementById('invalid-details').style.display = 'block';
+
+    }
     }
 
     return (
@@ -65,16 +107,72 @@ export function CheckoutPage() {
                 <p className="checkout-window-text">Your products added to the shopping cart:</p>
                 <div className="checkout-window__grid">
                     {cartProducts.map((product) => (
-                        <CheckoutItem key={product.id} product={product}
-                                      onIncrease={() => handleModifyQuantity(product.productId, 1)}
-                                      onDecrease={() => handleModifyQuantity(product.productId, -1)}/>
+                        <CheckoutItem
+                            key={product.id}
+                            product={product}
+                            onIncrease={() => handleModifyQuantity(product.productId, 1)}
+                            onDecrease={() => handleModifyQuantity(product.productId, -1)}
+                        />
                     ))}
                 </div>
-            </div>
-            <div className="price-checkout">
                 <p className="checkout-window-total">Total: ${totalPrice.toFixed(2)}</p>
-                <button className="checkout-window__button" onClick={handleBuyProducts}>Buy Now!</button>
             </div>
+            {cartProducts.length !== 0 && (
+                <div className="delivery-info">
+                    <Form >
+                        <Form.Item
+                            label="Full Name"
+                            name="fullName"
+                            rules={[{required: true, message: 'Please enter your full name'}]}
+                        >
+                            <Input
+                                placeholder="Enter your full name"
+                                value={fullName}
+                                onChange={handleFullNameChange}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Phone Number"
+                            name="phoneNumber"
+                            rules={[{required: true, message: 'Please enter your phone number'}]}
+                        >
+                            <Input
+                                placeholder="Enter your phone number"
+                                value={phoneNumber}
+                                onChange={handlePhoneNumberChange}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Delivery Address"
+                            name="deliveryAddress"
+                            rules={[{required: true, message: 'Please enter your delivery address'}]}
+                        >
+                            <Input
+                                placeholder="Enter your delivery address"
+                                value={deliveryAddress}
+                                onChange={handleDeliveryAddressChange}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Payment Method"
+                            name="paymentMethod"
+                            rules={[{required: true, message: 'Please select a payment method'}]}
+                        >
+                            <Radio.Group value={paymentMethod} onChange={handlePaymentMethodChange}>
+                                <Radio value="cash">Cash on Delivery</Radio>
+                                <Radio value="online">Online Payment</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <div className="price-checkout">
+                            <button className="checkout-window__button" onClick={handleBuyProducts}>
+                                Order Now!
+                            </button>
+                        </div>
+                        <p  id={"invalid-details"} style={{display: "none", color: "red"}}>Complete all fields! </p>
+                    </Form>
+                </div>
+            )}
         </div>
     );
+
 }

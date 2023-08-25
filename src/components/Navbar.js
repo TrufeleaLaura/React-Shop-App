@@ -9,7 +9,7 @@ import {setCart} from "../redux/cartRedux";
 import {useGetCartQuery} from "../redux/apiRedux";
 
 export function Navbar() {
-    const links = ["What's new", "Login", "Cart", "Log Out", "Account","Register"];
+    const links = ["What's new", "Login", "Cart", "Log Out","Orders", "Account","Register"];
     const {user, logout} = useAuth();
     const cartProducts = useSelector(state => state.cart);
     const dispatch = useDispatch();
@@ -49,6 +49,12 @@ export function Navbar() {
                                 linkPath = '/register';
                             } else {
                                 return null;
+                            }
+                        }else if (link === 'Orders') {
+                            if (!user) {
+                                linkPath = '/login';
+                            } else {
+                                linkPath = '/order'
                             }
                         } else if (link === 'Cart') {
                             if (!user) {

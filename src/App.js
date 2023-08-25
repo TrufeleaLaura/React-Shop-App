@@ -11,6 +11,7 @@ import {CheckoutPage} from "./pages/CheckoutPage";
 
 import {AccountPage} from "./pages/AccountPage";
 import RegisterPage from "./pages/RegisterPage";
+import OrderPage from "./pages/OrderPage";
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/cart" element={<ProtectedRoute><CheckoutPage/></ProtectedRoute>}/>
                     <Route path="/account" element={<AccountPage/>}/>
                     <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/order" element={<ProtectedRoute><OrderPage/></ProtectedRoute>}/>
                 </Routes>
         </AuthProvider>
     );
