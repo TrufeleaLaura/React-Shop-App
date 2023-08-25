@@ -23,8 +23,6 @@ function LoginPage() {
                 console.log(data);
                 const {user} = data;
                 login(user);
-                //const token = user.token;
-                //login(token);
                 navigate('/shop');
             } else {
                 document.getElementById("invalid").style.display = "block";
@@ -32,8 +30,10 @@ function LoginPage() {
                 setPassword('');
             }
         } catch (error) {
-            console.error('Error during login:', error);
-        }
+                console.error('Error during login:', error);
+                document.getElementById("invalid").innerHTML = error.response.data+"!";
+                document.getElementById("invalid").style.display = "block";
+            }
     };
     return (
         <div className="login-container">

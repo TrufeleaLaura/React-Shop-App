@@ -89,11 +89,19 @@ export default function OrderPage() {
     ]
 
     const handleShowModal = async (record) => {
-        const response = await axios.get(`http://localhost:8080/api/order/${record._id}`);
+        const response = await axios.get(`http://localhost:8080/api/order/one-order/${user._id}/${record._id}`,
+            {headers: {Authorization: `Bearer ${user.token}`}}).catch(error => {
+            if (error.response.data === "Invalid token" || error.response.data === "Unauthorized access") {
+                alert("You are not logged in!")
+                navigate('/login');
+            }
+
+        });
         if (response.data) {
             setOrderProducts(response.data.products);
             setIsModalOpen(true);
         }
+
 
     }
     const handleCloseModal = () => {
@@ -106,7 +114,7 @@ export default function OrderPage() {
                     setOrder(response.data);
                 }
             ).catch(error => {
-            if (error.response.message === "Invalid token" || error.response.message === "Unauthorized access") {
+            if (error.response.data === "Invalid token" || error.response.data === "Unauthorized access") {
                 alert("You are not logged in!")
                 navigate('/login');
             }

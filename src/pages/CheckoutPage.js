@@ -99,7 +99,7 @@ export function CheckoutPage() {
             }
 
         } catch (error) {
-            if (error.response.message === "Invalid token" || error.response.message === "Unauthorized access") {
+            if (error.response.data === "Invalid token" || error.response.data === "Unauthorized access") {
                 alert("You are not logged in!")
                 navigate('/login');
             }
