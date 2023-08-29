@@ -176,8 +176,16 @@ export function ReviewSection({ productId }) {
                         </>
                     ) : (
                         <>
-                            <Rate disabled value={review.rating} />
-                            <p>{review.reviewText}</p>
+                            <div className="review-info">
+                                <div className="review-rating">
+                                    <Rate disabled value={review.rating} />
+                                </div>
+                                <p>{review.reviewText}</p>
+                            </div>
+                            <div className="review-meta">
+                                <p className="review-date">Date: {review.date}</p>
+                                <p className="review-status">Status: {review.status}</p>
+                            </div>
                         </>
                     )}
                 </Card>

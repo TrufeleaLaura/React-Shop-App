@@ -550,4 +550,43 @@
     width:800px;
 }
 
+.review-card {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-info {
+    margin-bottom: 10px;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.review-rating span {
+    margin-left: 5px;
+}
+
+.review-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #888;
+}
+
+.review-date,
+.review-status {
+    font-size: 12px;
+}
+
+.review-status {
+    text-transform: uppercase;
+}
+
+
 
