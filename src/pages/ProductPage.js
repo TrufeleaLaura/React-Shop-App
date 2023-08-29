@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCart} from "../redux/cartRedux";
 import {useUpdateCartMutation} from "../redux/apiRedux";
 import axios from "axios";
+import {ReviewSection} from "../components/ReviewSection";
 
 function ProductPage() {
     const [isAdded, setIsAdded] = useState(false);
@@ -64,10 +65,10 @@ function ProductPage() {
 
 
     return (
+        <>
         <div className="product-page">
             <div className="product-page__image">
                 <img src={product.thumbnail} alt="Product"/>
-
             </div>
             <div className="product-page__details">
                 <h2 className="product-page__details__title">{product.title}</h2>
@@ -97,6 +98,9 @@ function ProductPage() {
                     </Link>)}
             </div>
         </div>
+        <ReviewSection productId={product.id}/>
+        </>
+
     );
 }
 

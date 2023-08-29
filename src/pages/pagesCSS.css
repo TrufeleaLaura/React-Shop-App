@@ -69,8 +69,8 @@
     max-width: 1200px;
     min-height: 700px;
     margin: 0 auto;
-    margin-top:10rem;
-    border: 15px solid midnightblue;
+    margin-top:2rem;
+    border: 1px solid midnightblue;
 }
 
 .product-page__image {

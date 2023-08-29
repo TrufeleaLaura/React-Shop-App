@@ -536,4 +536,18 @@
     margin-top: 0.5rem;
 }
 
+.reviews-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+}
+
+:where(.css-dev-only-do-not-override-17a39f8).ant-card-bordered {
+    border: 1px solid midnightblue;
+    width:800px;
+}
+
 

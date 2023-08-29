@@ -26,6 +26,7 @@ export function MainPage() {
     const [searchTerm, setSearchTerm] = useState([]);
     const [doRequestScroll, setDoRequestScroll] = useState(true);
     const [enterPressed, setEnterPressed] = useState(false);
+    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/products/categories')
@@ -143,7 +144,9 @@ export function MainPage() {
     };
 
     useEffect(() => {
-        performSearch(searchTerm)
+        if(flag === true){ //when the page is loaded, the search term is empty, so we don't want to perform a search
+        performSearch(searchTerm)}
+        setFlag(true);
     }, [searchTerm]);
 
     const performSearch = async (searchValue) => {
