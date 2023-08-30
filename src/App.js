@@ -12,6 +12,7 @@ import {CheckoutPage} from "./pages/CheckoutPage";
 import {AccountPage} from "./pages/AccountPage";
 import RegisterPage from "./pages/RegisterPage";
 import OrderPage from "./pages/OrderPage";
+import {ReturnPage} from "./pages/ReturnPage";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/account" element={<AccountPage/>}/>
                     <Route path="/register" element={<RegisterPage/>}/>
                     <Route path="/order" element={<ProtectedRoute><OrderPage/></ProtectedRoute>}/>
+                    <Route path="/return/:orderId" element={<ProtectedRoute><ReturnPage/></ProtectedRoute>}/>
                 </Routes>
         </AuthProvider>
     );

@@ -11,6 +11,7 @@ export default function OrderPage() {
     const [orderProducts, setOrderProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+
     const columnsProducts = [
         {
             title: 'Product Name',
@@ -37,6 +38,11 @@ export default function OrderPage() {
             title: 'Total Price',
             dataIndex: 'discountedPrice',
             key: 'discountedPrice',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
         }
     ]
 
@@ -86,7 +92,25 @@ export default function OrderPage() {
                 </div>
             ),
         },
+        {
+            title:"Return",
+            key:"return",
+            "render":(text,record)=>(
+                <div>
+                    <Button
+                        type="link"
+                        style={{color: "midnightblue"}}
+                        onClick={() => handleNavigation(record._id)}
+                        >
+                        Click for Return Products
+                    </Button>
+                </div>
+            )
+        }
     ]
+    const handleNavigation = (recordId) => {
+        navigate(`/return/${recordId}`);
+    };
 
     const handleShowModal = async (record) => {
         const response = await axios.get(`http://localhost:8080/api/order/one-order/${user._id}/${record._id}`,
