@@ -454,3 +454,6 @@ input {
     object-fit: cover;
     border: 1px solid midnightblue;
 }
+.product-card.selected {
+    border: 2px solid rgba(57, 197, 53, 0.7);
+}
